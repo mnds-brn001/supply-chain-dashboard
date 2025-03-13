@@ -23,6 +23,16 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+        div[data-testid="stMarkdownContainer"]:hover {
+            transform: scale(1.02);
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+
 
 # Definindo a paleta de cores personalizada
 COLORS = {

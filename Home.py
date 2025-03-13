@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
 from datetime import datetime
 import io
 import os
@@ -20,6 +21,16 @@ st.markdown("""
     body, .plotly-chart {
         font-family: 'Inter', sans-serif;
     }
+    </style>
+    """, unsafe_allow_html=True)
+
+
+st.markdown("""
+    <style>
+        div[data-testid="stMarkdownContainer"]:hover {
+            transform: scale(1.02);
+            transition: all 0.3s ease-in-out;
+        }
     </style>
     """, unsafe_allow_html=True)
 
@@ -291,7 +302,9 @@ if df is not None:
             textinfo='percent+label'
         )])
         fig_vendas.update_layout(
-            title="",
+            title=" ",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
             showlegend=True,
             legend_font=dict(size=18,family="Inter, sans-serif"),
             height=700,
@@ -327,6 +340,8 @@ if df is not None:
         )
 
         fig_receita.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
             height=670,
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['secondary'],
@@ -416,6 +431,8 @@ if df is not None:
             color_discrete_sequence=COLORS['mixed']
         )
         fig_receita_cliente.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
             height=600,
             font=dict(family="Inter, sans-serif",size=23),
             title_font_color=COLORS['secondary'],
@@ -445,6 +462,8 @@ if df is not None:
             textposition="outside"
         )
         fig_vendas_cliente.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
             height=600,
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['secondary'],
@@ -499,6 +518,8 @@ if df is not None:
         outsidetextfont=dict(family="Inter, sans-serif",color=COLORS["cool_greens"][3])
     ))
     fig_produtos.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
         height=600,
         margin=dict(t=40, b=40,l=20,r=20),
         title_font_color=COLORS['secondary'],
@@ -591,7 +612,7 @@ if df is not None:
             title=" ",
             color_discrete_sequence=COLORS['mixed'],
         )
-        fig_mapa.update_layout(height=620,title_font_color=COLORS['secondary'],font=dict(family="Inter, sans-serif",size=20),)
+        fig_mapa.update_layout(paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(0,0,0,0)",height=620,title_font_color=COLORS['secondary'],font=dict(family="Inter, sans-serif",size=20),)
         st.plotly_chart(fig_mapa, use_container_width=True)
 
     with col_geo2:
@@ -614,6 +635,8 @@ if df is not None:
             outsidetextfont=dict(color=COLORS["warm_reds"][1])
         )
         fig_custos.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
             height=600,
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['secondary'],
