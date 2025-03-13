@@ -71,22 +71,15 @@ def custom_divider():
     )
 
 
-def kpi_card(title, value, color, help_text=None):
+def kpi_card(title, value, color1,color2, help_text=None):
     text_color = "#FFFFFF"  # Mantemos branco para legibilidade
-    border_color = color  # A borda será da mesma cor do KPI
-    bg_opacity = "0.60"  # Define a opacidade do fundo (85%)
     
-    def hex_to_rgba(hex_color, alpha=1):
-        hex_color = hex_color.lstrip("#")
-        r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
-        return f"rgba({r},{g},{b},{alpha})"
-
-    bg_rgba = hex_to_rgba(color, bg_opacity)
-
+    
+    
     st.markdown(
         f"""
         <div style="
-            background: {bg_rgba};
+            background: linear-gradient(135deg, {color1}, {color2});
             padding: 20px;
             border-radius: 10px;
             text-align: center;
@@ -94,8 +87,8 @@ def kpi_card(title, value, color, help_text=None):
             font-family: 'Inter', 'sans-serif';
             font-weight: bold;
             color: {text_color};            
-            border: 5px solid {border_color}; /* Borda sólida */
-            box-shadow: 20px 20px 200px rgba(0,0,0,0.3);">
+            border: 4px solid {color1};
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.3);">
             {title}  
             <br>  
             <span style="font-size: 28px; font-weight: bold;">{value}</span>
@@ -143,19 +136,20 @@ if df is not None:
         df_filtered = df_filtered[df_filtered["Transportadora"] == selected_carrier]
 
     # Header principal
-    st.markdown("""
+    st.markdown(f"""
         <div style='
-            background-color: #1a365d;
             padding: 15px;
             border-radius: 10px;
             text-align: center;
+            background: linear-gradient(135deg, {COLORS["blues"][2]}, {COLORS["golds"][0]});
+            box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
         '>
             <h1 style='
                 color: #FFFFFF;
                 font-size: 36px;
                 font-weight: bold;
                 font-family: Inter, sans-serif;
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>🚛 Análise de Transportadoras</h1>
         </div>
         """, unsafe_allow_html=True)
@@ -181,14 +175,19 @@ if df is not None:
         volume_total = df_filtered["Volume_Pedidos"].sum()
         kpi_card(
             "📦 Volume Total de Pedidos",
-            f"{volume_total:,}", COLORS["golds"][1],
+            f"{volume_total:,}", 
+            COLORS["golds"][1],
+            COLORS["golds"][3],
             "Total de pedidos processados"
         )
 
     with col2:
         # Calculando o custo total de envio (soma de todos os custos)
         custo_total = df_filtered["Custos_Envio"].sum()
-        kpi_card("🚛 Custo Logístico Total", f"R$ {df_filtered["Custos_Totais"].sum():,.2f}", COLORS["warm_yellows"][0],"Custo Total do Envio de Pedidos")
+        kpi_card("🚛 Custo Logístico Total", f"R$ {df_filtered["Custos_Totais"].sum():,.2f}", 
+                COLORS["warm_yellows"][0],
+                COLORS["golds"][3],
+                "Custo Total do Envio de Pedidos")
 
     with col3:
         # Calculando o custo médio por pedido (custo total / volume total)
@@ -197,7 +196,9 @@ if df is not None:
 
         kpi_card(
             "📉 % Logístico sobre Receita",
-            f"{percentual_custo_logistico:.2f}%",COLORS["cool_greens"][4],
+            f"{percentual_custo_logistico:.2f}%",
+            COLORS["cool_greens"][0],
+            COLORS["cool_greens"][5],
             "Percentual do custo de envio em relação à receita total"
         )
 
@@ -206,7 +207,9 @@ if df is not None:
 
         kpi_card(
             "📊 Custo Médio de Envio",
-            f"R$ {custo_medio_transportadora:,.2f}", COLORS["blues"][1],
+            f"R$ {custo_medio_transportadora:,.2f}", 
+            COLORS["blues"][1],
+            COLORS["blues"][4],
             "Média dos custos de envio por transportadora"
         )
 
@@ -220,7 +223,7 @@ if df is not None:
                 font-weight: bold;
                 font-family: Inter, sans-serif;
                 background: linear-gradient(to right, #c69214, #d4a642);
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📦 Volume de Pedidos por Transportadora</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -232,7 +235,7 @@ if df is not None:
             font-size: 20px;
             font-weight: 600;
             font-family: Inter, sans-serif;
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             text-align: center;
         '>Volume de Pedidos por Transportadora</h3>
         """, unsafe_allow_html=True)
@@ -262,12 +265,12 @@ if df is not None:
         xaxis=dict(
                 title="Transportadora",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
         yaxis=dict(
                 title="Volume de Pedidos",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
     )
     st.plotly_chart(fig_volume, use_container_width=True)
@@ -288,7 +291,7 @@ if df is not None:
                 font-weight: bold;
                 font-family: Inter, sans-serif;
                 background: linear-gradient(to right, #c0392b, #d92e1c);
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>💰 Custos de Envio por Transportadora</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -300,7 +303,7 @@ if df is not None:
             font-size: 20px;
             font-weight: 600;
             font-family: Inter, sans-serif;
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             text-align: center;
         '>Variação dos Custos de Envio por Transportadora</h3>
         """, unsafe_allow_html=True)
@@ -333,7 +336,7 @@ if df is not None:
         yaxis=dict(
                 title="Custos de Envio (R$)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
     )
     st.plotly_chart(fig_custos, use_container_width=True)
@@ -354,7 +357,7 @@ if df is not None:
                 font-weight: bold;
                 font-family: Inter, sans-serif;
                 background: linear-gradient(to right, #1a5632, #16a085);
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>🚚 Custos por Modalidade de Transporte</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -366,7 +369,7 @@ if df is not None:
             font-size: 20px;
             font-weight: 600;
             font-family: Inter, sans-serif;
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             text-align: center;
         '>Custos Médios Totais de Envio por Modalidade de Transporte</h3>
         """, unsafe_allow_html=True)
@@ -404,12 +407,12 @@ if df is not None:
         xaxis=dict(
                 title="Modalidade de Transporte",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
         yaxis=dict(
                 title="Custo Médio Total de Envio (R$)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
     )
     st.plotly_chart(fig_modalidade, use_container_width=True)
@@ -431,7 +434,7 @@ if df is not None:
                 font-weight: bold;
                 font-family: Inter, sans-serif;
                 background: linear-gradient(to right, #2a4a7f, #4b72c4);
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>🌆 Análise de Custos por Cidade</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -443,7 +446,7 @@ if df is not None:
             font-size: 20px;
             font-weight: 600;
             font-family: Inter, sans-serif;
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             text-align: center;
         '>Custo Total de Envio por Cidade</h3>
         """, unsafe_allow_html=True)
@@ -476,12 +479,12 @@ if df is not None:
         xaxis=dict(
                 title="Custo Total de Envio (R$)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
         yaxis=dict(
                 title="Cidade",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
     )
     st.plotly_chart(fig_cidade, use_container_width=True)
@@ -503,7 +506,7 @@ if df is not None:
                 font-weight: bold;
                 font-family: Inter, sans-serif;
                 background: linear-gradient(to right, #7D1128, #c0392b);
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📋 Dados Detalhados</h2>
         </div>
         """, unsafe_allow_html=True)

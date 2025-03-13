@@ -46,14 +46,14 @@ COLORS = {
     'warm_reds': ['#7D1128', '#c0392b', '#a93226', '#8B1E3F'],  
 
     # Paleta mista final
-    'mixed': ['#1a365d', '#2a4a7f', '#c69214', '#3a5ea1', '#d4a642', '#4b72c4', '#e2ba70', 
-              '#1a5632', '#d95e30', '#7D1128']
+    'mixed': ['#1a365d', '#1b2e7b', '#c69214', '#2a4a7f', '#d4a642', '#3a5ea1', '#d9a500', '#4b72c4', 
+              '#e2ba70', '#0e4025', '#1a5632', '#d95e30', '#7D1128', '#e67e22', '#8B1E3F']
 }
 
-def kpi_card(title, value, color, help_text=None):
+def kpi_card(title, value, color1,color2, help_text=None):
     
     text_color = "#FFFFFF"  # Mantemos branco para legibilidade
-    border_color = color  # A borda será da mesma cor do KPI
+    border_color = color1  # A borda será da mesma cor do KPI
     bg_opacity = "0.60"  # Define a opacidade do fundo (85%)
     
     def hex_to_rgba(hex_color, alpha=1):
@@ -61,25 +61,22 @@ def kpi_card(title, value, color, help_text=None):
         r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
         return f"rgba({r},{g},{b},{alpha})"
 
-    bg_rgba = hex_to_rgba(color, bg_opacity)
-
-# KPIs
-def kpi_card(title, value, color, help_text=None):
+    bg_rgba = hex_to_rgba(color1, bg_opacity)
     st.markdown(
         f"""
         <div style="
-            background: {color};
+            background: linear-gradient(135deg, {color1}, {color2});
             padding: 20px;
             border-radius: 10px;
             text-align: center;
             font-size: 22px;
-            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
             font-weight: bold;
-            border: 4px solid {color};
-            box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
-        ">
-            {title}
-            <br>
+            color: {text_color};            
+            border: 4px solid {border_color}; 
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.3);">
+            {title}  
+            <br>  
             <span style="font-size: 28px; font-weight: bold;">{value}</span>
         </div>
         """,
@@ -150,19 +147,21 @@ if df is not None:
     df_filtered['Lucro'] = df_filtered['Receita_Gerada'] - df_filtered['Custos_Totais']
     df_filtered['Margem'] = (df_filtered['Lucro'] / df_filtered['Receita_Gerada']) * 100
     
-    st.markdown("""
+
+    st.markdown(f"""
     <div style='
-        background-color: #1a365d;
         padding: 15px;
         border-radius: 10px;
         text-align: center;
+        background: linear-gradient(135deg, {COLORS["cool_blues"][1]}, {COLORS["golds"][0]});
+        box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
     '>
         <h1 style='
             color: #FFFFFF;
             font-size: 36px;
             font-weight: bold;
             font-family: Inter, sans-serif;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
         '>📊 Supply Chain Insights</h1>
     </div>
     """, unsafe_allow_html=True)
@@ -192,16 +191,32 @@ if df is not None:
     margem_media = df_filtered["Lucro"].sum() / df_filtered["Receita_Gerada"].sum() * 100 if df_filtered["Receita_Gerada"].sum() > 0 else 0
 
     with col1:
-        kpi_card("💰 Receita Total", f"R$ {df_filtered['Receita_Gerada'].sum():,.2f}", COLORS['cool_blues'][3], "Soma total da receita gerada")
+        kpi_card("💰 Receita Total",
+                f"R$ {df_filtered['Receita_Gerada'].sum():,.2f}",
+                COLORS['blues'][0],
+                COLORS["cool_blues"][2],
+                "Soma total da receita gerada")
 
     with col2:
-        kpi_card("📦 Total de Vendas", f"{df_filtered['Quantidade_Vendida'].sum():,}", COLORS['cool_greens'][4], "Quantidade total de produtos vendidos")
+        kpi_card("📦 Total de Vendas", 
+                f"{df_filtered['Quantidade_Vendida'].sum():,}",
+                COLORS['cool_blues'][1], 
+                COLORS['cool_greens'][3],
+                "Quantidade total de produtos vendidos")
 
     with col3:
-        kpi_card("🚛 Total Logística", f"R$ {df_filtered['Custos_Totais'].sum():,.2f}", COLORS['warm_oranges'][1], "Custo Total do Envio de Pedidos")
+        kpi_card("🚛 Total Logística", 
+                f"R$ {df_filtered['Custos_Totais'].sum():,.2f}", 
+                COLORS['warm_oranges'][1], 
+                COLORS["golds"][1],
+                "Custo Total do Envio de Pedidos")
 
     with col4:
-        kpi_card("📈 Margem Média", f"{margem_media:.2f}%", COLORS['golds'][1], "Margem do Lucro pela Receita")
+        kpi_card("📈 Margem Média", 
+                f"{margem_media:.2f}%", 
+                COLORS['golds'][0], 
+                COLORS["golds"][4],
+                "Margem do Lucro pela Receita")
 
     custom_divider()
     
@@ -219,7 +234,7 @@ if df is not None:
                 font-size: 29px;
                 font-weight: bold;
                 font-family: Inter, sans-serif;
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📊 Análise de Vendas e Receita</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -240,7 +255,7 @@ if df is not None:
                     font-weight: 600;
                     font-family: Inter, sans-serif;
                     margin: 0;
-                    text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>Distribuição de Vendas por Categoria</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -258,7 +273,7 @@ if df is not None:
                     font-weight: 600;
                     font-family: Inter, sans-serif;
                     margin: 0;
-                    text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>Receita por Categoria</h3>
             </div>
             """, unsafe_allow_html=True)   
@@ -322,12 +337,12 @@ if df is not None:
             xaxis=dict(
                 title="Categoria",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
         yaxis=dict(
             title="Total de Receita (R$)",
             title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-            tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+            tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
         ),
         )
         st.plotly_chart(fig_receita, use_container_width=True)
@@ -346,7 +361,7 @@ if df is not None:
             font-weight: bold;
             font-family: Inter, sans-serif;
             background: linear-gradient(to right, #c69214, #d4a642);
-            text-shadow: 1px 4px 6px rgba(0,0,0,0.7);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>👥 Análise de Clientes</h2>
             </div>
            """, unsafe_allow_html=True)
@@ -365,7 +380,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    text-shadow: 1px 3px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                     background: linear-gradient(to right, #c69214, #d4a642);
                 '>Receita por Tipo de Cliente</h3>
             </div>
@@ -382,7 +397,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    text-shadow: 1px 3px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                     background: linear-gradient(to right, #c69214, #d4a642);
                 '>Volume de Vendas por Tipo de Cliente</h3>
             </div>
@@ -404,7 +419,7 @@ if df is not None:
             height=600,
             font=dict(family="Inter, sans-serif",size=23),
             title_font_color=COLORS['secondary'],
-            legend_font=dict(family="Inter, sans-serif",size=16),  # Legenda maior
+            legend_font=dict(family="Inter, sans-serif",size=18),  # Legenda maior
         )
         st.plotly_chart(fig_receita_cliente, use_container_width=True)
 
@@ -439,13 +454,13 @@ if df is not None:
             xaxis=dict(
             title="Tipo de Cliente",
             title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-            tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+            tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
         ),
             yaxis_title="Total de Vendas",
             yaxis=dict(
             title="Volume de Vendas (R$)",
             title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-            tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+            tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
         ),
         )
         st.plotly_chart(fig_vendas_cliente, use_container_width=True)
@@ -463,7 +478,7 @@ if df is not None:
             font-weight: bold;
             font-family: Inter, sans-serif;
             background: linear-gradient(to right, #c69214, #d4a642);
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.7);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>💎 Top 15 Produtos Mais Lucrativos</h2>
             """, unsafe_allow_html=True)
 
@@ -518,7 +533,7 @@ if df is not None:
             font-weight: bold;
             font-family: Inter, sans-serif;
             background: linear-gradient(to right, #c69214, #d4a642);
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
             '>📍 Análise Geográfica</h2>
             """, unsafe_allow_html=True)
 
@@ -537,7 +552,7 @@ if df is not None:
                     font-weight: 600;
                     font-family: Inter, sans-serif;
                     background: linear-gradient(to right, #c69214, #d4a642);
-                    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>Volume de Vendas por Localização</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -554,7 +569,7 @@ if df is not None:
                     font-weight: 600;
                     font-family: Inter, sans-serif;
                     background: linear-gradient(to right, #c69214, #d4a642);
-                    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>Custo Total por Localização</h3>
             </div>
             """, unsafe_allow_html=True)   
@@ -608,12 +623,12 @@ if df is not None:
             xaxis=dict(
                 title="Cidades",
                 title_font=dict(family="Inter, sans-serif",size=18),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=14)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
             yaxis=dict(
                 title="Custo Total Envio (R$)",
                 title_font=dict(family="Inter, sans-serif",size=18),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=14)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
         )
         st.plotly_chart(fig_custos, use_container_width=True)
@@ -631,7 +646,7 @@ if df is not None:
             font-weight: bold;
             font-family: Inter, sans-serif;
             background: linear-gradient(to right, #c69214, #d4a642);
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             '>📋 Dados Detalhados</h2>
             """, unsafe_allow_html=True)
 

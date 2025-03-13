@@ -43,7 +43,7 @@ COLORS = {
     'warm_oranges': ['#b45309', '#d95e30', '#e67e22', '#d35400', '#f47c26'],  
 
     # **Vermelhos intensos e profundos**
-    'warm_reds': ['#7D1128', '#8B1E3F', '#a93226', '#c0392b', '#d92e1c'],  
+    'warm_reds': ['#5A0E17', '#7D1128', '#8B1E3F', '#A93226', '#C0392B', '#D92E1C', '#E84118'],
 
     # **Paleta mista final (ordenada por profundidade)**
     'mixed': ['#1a365d', '#1b2e7b', '#c69214', '#2a4a7f', '#d4a642', '#3a5ea1', '#d9a500', '#4b72c4', 
@@ -71,10 +71,10 @@ def custom_divider():
     unsafe_allow_html=True
     )
 
-def kpi_card(title, value, color, help_text=None):
+def kpi_card(title, value, color1,color2, help_text=None):
 
     text_color = "#FFFFFF"  # Mantemos branco para legibilidade
-    border_color = color  # A borda será da mesma cor do KPI
+    border_color = color1  # A borda será da mesma cor do KPI
     bg_opacity = "0.60"  # Define a opacidade do fundo (85%)
     
     def hex_to_rgba(hex_color, alpha=1):
@@ -82,12 +82,12 @@ def kpi_card(title, value, color, help_text=None):
         r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
         return f"rgba({r},{g},{b},{alpha})"
 
-    bg_rgba = hex_to_rgba(color, bg_opacity)
+    #bg_rgba = hex_to_rgba(color1, bg_opacity)
 
     st.markdown(
         f"""
         <div style="
-            background: {bg_rgba};
+            background: linear-gradient(135deg, {color1}, {color2});
             padding: 20px;
             border-radius: 10px;
             text-align: center;
@@ -95,8 +95,8 @@ def kpi_card(title, value, color, help_text=None):
             font-family: 'Inter';
             font-weight: bold;
             color: {text_color};            
-            border: 5px solid {border_color}; /* Borda sólida */
-            box-shadow: 20px 20px 200px rgba(0,0,0,0.3);">
+            border: 4px solid {border_color}; /* Borda sólida */
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);">
             {title}  
             <br>  
             <span style="font-size: 28px; font-weight: bold;">{value}</span>
@@ -150,19 +150,20 @@ if df is not None:
     df_filtered["Prejuizo_Defeitos"] = df_filtered["Receita_Gerada"] * (df_filtered["Taxa_Defeitos"] / 100)
 
     # Header principal com título e descrição
-    st.markdown("""
+    st.markdown(f"""
         <div style='
-            background-color: #1a365d;
             padding: 15px;
             border-radius: 10px;
             text-align: center;
+            background: linear-gradient(135deg, {COLORS["warm_reds"][0]}, {COLORS["warm_oranges"][3]});
+            box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
         '>
             <h1 style='
                 color: #FFFFFF;
                 font-size: 36px;
                 font-weight: bold;
                 font-family: Inter, sans-serif;
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>🔍 Análise de Qualidade e Defeitos</h1>
         </div>
         """, unsafe_allow_html=True)
@@ -188,7 +189,9 @@ if df is not None:
         taxa_defeitos = df_filtered["Taxa_Defeitos"].mean()
         kpi_card(
             "❌ Taxa Média de Defeitos",
-            f"{taxa_defeitos:.2f}%", COLORS["warm_oranges"][1],
+            f"{taxa_defeitos:.2f}%", 
+            COLORS["warm_reds"][0],
+            COLORS["warm_oranges"][3],
             "Média geral de defeitos nos produtos filtrados"
         )
 
@@ -196,7 +199,9 @@ if df is not None:
         prejuizo_total = df_filtered["Prejuizo_Defeitos"].sum()
         kpi_card(
             "💰 Prejuízo Total",
-            f"R$ {prejuizo_total:,.2f}", COLORS["warm_reds"][1],
+            f"R$ {prejuizo_total:,.2f}", 
+            COLORS["warm_reds"][0],
+            COLORS["warm_reds"][5],
             "Receita perdida devido a produtos defeituosos"
         )
 
@@ -213,7 +218,7 @@ if df is not None:
                 font-weight: bold;
                 font-family: Inter, sans-serif;
                 background: linear-gradient(to right, #c69214, #d4a642);
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📊 Análise de Defeitos por Categoria</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -229,7 +234,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>📉 Taxa Média de Defeitos por Categoria</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -243,7 +248,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>💸 Distribuição do Prejuízo por Categoria</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -281,13 +286,13 @@ if df is not None:
                 xaxis=dict(
                 title="Categoria de Produto",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
             yaxis_title="Taxa de Defeitos (%)",
             yaxis=dict(
                 title="Taxa de Defeitos (%)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
         )
         st.plotly_chart(fig_defeitos, use_container_width=True)
@@ -329,7 +334,7 @@ if df is not None:
                 font-weight: bold;
                 font-family: Inter, sans-serif;
                 background: linear-gradient(to right, #c0392b, #d92e1c);
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>❌ Produtos Críticos</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -345,7 +350,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>⚠️ Top 10 Produtos com Maior Taxa de Defeitos</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -359,7 +364,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>💰 Top 10 Produtos com Maior Prejuízo</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -392,18 +397,18 @@ if df is not None:
             title_font_color=COLORS['secondary'],
             font_color=COLORS['secondary'],
             font=dict(family="Inter, sans-serif",size=18),
-            legend_font=dict(family="Inter, sans-serif",size=14),
+            legend_font=dict(family="Inter, sans-serif",size=16),
             xaxis_title="Taxa de Defeitos (%)",
             xaxis=dict(
                 title="Taxa de Defeitos (%)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
             yaxis_title="Produto (SKU)",
             yaxis=dict(
                 title="Produto (SKU)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
         )
 
@@ -435,16 +440,16 @@ if df is not None:
             title_font_color=COLORS['secondary'],
             font_color=COLORS['secondary'],
             font=dict(family="Inter, sans-serif",size=18),
-            legend_font=dict(family="Inter, sans-serif",size=14),
+            legend_font=dict(family="Inter, sans-serif",size=16),
             xaxis=dict(
                 title="Prejuízo (R$)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
             yaxis=dict(
                 title="Produto (SKU)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
         )
 
@@ -464,7 +469,7 @@ if df is not None:
                 font-weight: bold;
                 font-family: Inter, sans-serif;
                 background: linear-gradient(to right, #1a5632, #16a085);
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📍 Análise por Localização</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -480,7 +485,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>🌍 Taxa Média de Defeitos por Localização</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -494,7 +499,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>🏙️ Prejuízo Total por Localização</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -526,12 +531,12 @@ if df is not None:
             xaxis=dict(
                 title="Localização",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
             yaxis=dict(
                 title="Taxa de Defeitos (%)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
         )
         st.plotly_chart(fig_local_defeitos, use_container_width=True)
@@ -562,12 +567,12 @@ if df is not None:
             xaxis=dict(
                 title="Localização",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
             ),
             yaxis=dict(
                 title="Prejuízo (R$)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
         )
         st.plotly_chart(fig_prejuizo_local, use_container_width=True)
@@ -586,7 +591,7 @@ if df is not None:
                 font-weight: bold;
                 font-family: Inter, sans-serif;
                 background: linear-gradient(to right, #7D1128, #c0392b);
-                text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📋 Dados Detalhados</h2>
         </div>
         """, unsafe_allow_html=True)
