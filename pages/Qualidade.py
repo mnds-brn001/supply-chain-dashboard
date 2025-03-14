@@ -13,7 +13,21 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
+st.markdown("""
+    <style>
+        /* Organização dos KPIs em telas menores */
+        @media (max-width: 768px) {
+            div[data-testid="column"] {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            div[data-testid="column"] > div {
+                width: 48% !important;
+            }
+        }
+    </style>
+    """, unsafe_allow_html=True)    
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
@@ -31,8 +45,13 @@ st.markdown("""
         }
     </style>
     """, unsafe_allow_html=True)
-
-
+st.markdown("""
+    <style>
+        .stMarkdownContainer {
+            word-wrap: break-word;
+        }
+    </style>
+    """, unsafe_allow_html=True)
 
 # Definindo a paleta de cores personalizada
 COLORS = {
@@ -248,26 +267,8 @@ if df is not None:
                 '>📉 Taxa Média de Defeitos por Categoria</h3>
             </div>
             """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-            <div style='text-align: center; padding-top: 10px;'>
-                <h3 style='
-                    color: white;
-                    background: linear-gradient(to right, #c69214, #d4a642);
-                    font-size: 20px;
-                    font-weight: 600;
-                    font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                '>💸 Distribuição do Prejuízo por Categoria</h3>
-            </div>
-            """, unsafe_allow_html=True)
-
-    col_def1, col_def2 = st.columns(2)
-
-    defeitos_categoria = df_filtered.groupby("Tipo_Produto")["Taxa_Defeitos"].mean().reset_index()
-    df_filtered.groupby("Tipo_Produto")["Taxa_Defeitos"].mean().reset_index()
-    with col_def1:
+        defeitos_categoria = df_filtered.groupby("Tipo_Produto")["Taxa_Defeitos"].mean().reset_index()
+        df_filtered.groupby("Tipo_Produto")["Taxa_Defeitos"].mean().reset_index()
         # Taxa média de defeitos por categoria
         df_filtered.groupby("Tipo_Produto")["Taxa_Defeitos"].mean().reset_index()
         fig_defeitos = px.bar(
@@ -307,10 +308,19 @@ if df is not None:
         )
         st.plotly_chart(fig_defeitos, use_container_width=True)
 
-
-
-
-    with col_def2:
+    with col2:
+        st.markdown("""
+            <div style='text-align: center; padding-top: 10px;'>
+                <h3 style='
+                    color: white;
+                    background: linear-gradient(to right, #c69214, #d4a642);
+                    font-size: 20px;
+                    font-weight: 600;
+                    font-family: Inter, sans-serif;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                '>💸 Distribuição do Prejuízo por Categoria</h3>
+            </div>
+            """, unsafe_allow_html=True)
         # Prejuízo por categoria
         prejuizo_categoria = df_filtered.groupby("Tipo_Produto")["Prejuizo_Defeitos"].sum().reset_index()
         fig_prejuizo = px.pie(
@@ -364,24 +374,6 @@ if df is not None:
                 '>⚠️ Top 10 Produtos com Maior Taxa de Defeitos</h3>
             </div>
             """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-            <div style='text-align: center; padding-top: 10px;'>
-                <h3 style='
-                    color: white;
-                    background: linear-gradient(to right, #c0392b, #d92e1c);
-                    font-size: 20px;
-                    font-weight: 600;
-                    font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                '>💰 Top 10 Produtos com Maior Prejuízo</h3>
-            </div>
-            """, unsafe_allow_html=True)
-
-    col_prod1, col_prod2 = st.columns(2)
-
-    with col_prod1:
         # Top 10 produtos com maior taxa de defeitos
         top_defeitos = df_filtered.sort_values(by="Taxa_Defeitos", ascending=False).head(10)
 
@@ -424,7 +416,19 @@ if df is not None:
 
         st.plotly_chart(fig_top_defeitos, use_container_width=True)
 
-    with col_prod2:
+    with col2:
+        st.markdown("""
+            <div style='text-align: center; padding-top: 10px;'>
+                <h3 style='
+                    color: white;
+                    background: linear-gradient(to right, #c0392b, #d92e1c);
+                    font-size: 20px;
+                    font-weight: 600;
+                    font-family: Inter, sans-serif;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                '>💰 Top 10 Produtos com Maior Prejuízo</h3>
+            </div>
+            """, unsafe_allow_html=True)
         # Top 10 produtos com maior prejuízo
         top_prejuizo = df_filtered.sort_values(by="Prejuizo_Defeitos", ascending=False).head(10)
 
@@ -465,8 +469,7 @@ if df is not None:
 
         st.plotly_chart(fig_top_prejuizo, use_container_width=True)
 
-
-    custom_divider()
+        custom_divider()
     # 📍 Análise por Localização
     st.markdown("""
         <div style='
@@ -499,24 +502,6 @@ if df is not None:
                 '>🌍 Taxa Média de Defeitos por Localização</h3>
             </div>
             """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-            <div style='text-align: center; padding-top: 10px;'>
-                <h3 style='
-                    color: white;
-                    background: linear-gradient(to right, #1a5632, #16a085);
-                    font-size: 20px;
-                    font-weight: 600;
-                    font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                '>🏙️ Prejuízo Total por Localização</h3>
-            </div>
-            """, unsafe_allow_html=True)
-
-    col_loc1, col_loc2 = st.columns(2)
-
-    with col_loc1:
         # Taxa de defeitos por localização
         defeitos_local = df_filtered.groupby("Localizacao")["Taxa_Defeitos"].mean().reset_index()
         fig_local_defeitos = px.bar(
@@ -551,7 +536,19 @@ if df is not None:
         )
         st.plotly_chart(fig_local_defeitos, use_container_width=True)
 
-    with col_loc2:
+    with col2:
+        st.markdown("""
+            <div style='text-align: center; padding-top: 10px;'>
+                <h3 style='
+                    color: white;
+                    background: linear-gradient(to right, #1a5632, #16a085);
+                    font-size: 20px;
+                    font-weight: 600;
+                    font-family: Inter, sans-serif;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                '>🏙️ Prejuízo Total por Localização</h3>
+            </div>
+            """, unsafe_allow_html=True)
         # Prejuízo por localização
         prejuizo_local = df_filtered.groupby("Localizacao")["Prejuizo_Defeitos"].sum().reset_index()
         fig_prejuizo_local = px.bar(

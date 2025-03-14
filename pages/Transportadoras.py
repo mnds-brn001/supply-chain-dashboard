@@ -13,7 +13,21 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
+st.markdown("""
+    <style>
+        /* Organização dos KPIs em telas menores */
+        @media (max-width: 768px) {
+            div[data-testid="column"] {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            div[data-testid="column"] > div {
+                width: 48% !important;
+            }
+        }
+    </style>
+    """, unsafe_allow_html=True)    
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
@@ -27,6 +41,13 @@ st.markdown("""
         div[data-testid="stMarkdownContainer"]:hover {
             transform: scale(1.02);
             transition: all 0.3s ease-in-out;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+st.markdown("""
+    <style>
+        .stMarkdownContainer {
+            word-wrap: break-word;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -234,18 +255,6 @@ if df is not None:
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("""
-        <h3 style='
-            color: white;
-            background: linear-gradient(to right, #c69214, #d4a642);
-            font-size: 20px;
-            font-weight: 600;
-            font-family: Inter, sans-serif;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            text-align: center;
-        '>Volume de Pedidos por Transportadora</h3>
-        """, unsafe_allow_html=True)
-
     # Gráfico de barras com volume de pedidos
     fig_volume = px.bar(
         df_filtered.groupby("Transportadora")["Volume_Pedidos"].sum().reset_index(),
@@ -302,18 +311,7 @@ if df is not None:
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("""
-        <h3 style='
-            color: white;
-            background: linear-gradient(to right, #c0392b, #d92e1c);    
-            font-size: 20px;
-            font-weight: 600;
-            font-family: Inter, sans-serif;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            text-align: center;
-        '>Variação dos Custos de Envio por Transportadora</h3>
-        """, unsafe_allow_html=True)
-        # Box plot de custos
+    # Box plot de custos
 
     fig_custos = go.Figure()
     for transportadora in df_filtered["Transportadora"].unique():
@@ -368,20 +366,7 @@ if df is not None:
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("""
-        <h3 style='
-            color: white;
-            background: linear-gradient(to right, #1a5632, #16a085);
-            font-size: 20px;
-            font-weight: 600;
-            font-family: Inter, sans-serif;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            text-align: center;
-        '>Custos Médios Totais de Envio por Modalidade de Transporte</h3>
-        """, unsafe_allow_html=True)
-
-    
-    
+   
     df_filtered["Custos_Totais"] = df_filtered["Custos_Totais"].fillna(0)
     custos_modalidade = df_filtered.groupby("Modos_Transporte")["Custos_Totais"].mean().reset_index()
 

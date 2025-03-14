@@ -14,7 +14,21 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
+st.markdown("""
+    <style>
+        /* Organização dos KPIs em telas menores */
+        @media (max-width: 768px) {
+            div[data-testid="column"] {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            div[data-testid="column"] > div {
+                width: 48% !important;
+            }
+        }
+    </style>
+    """, unsafe_allow_html=True)    
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
@@ -30,6 +44,14 @@ st.markdown("""
         div[data-testid="stMarkdownContainer"]:hover {
             transform: scale(1.02);
             transition: all 0.3s ease-in-out;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+        .stMarkdownContainer {
+            word-wrap: break-word;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -233,7 +255,6 @@ if df is not None:
     
 
     # Gráficos principais
-# Exemplo de título de seção
     st.markdown("""
         <div style='
             text-align: center;
@@ -270,29 +291,7 @@ if df is not None:
                 '>Distribuição de Vendas por Categoria</h3>
             </div>
             """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-            <div style='
-            text-align: center;
-            padding-top: 10px;
-            '>
-                <h3 style='
-                    color: white;
-                    background: linear-gradient(to right, #c69214, #d4a642);
-                    font-size: 20px;
-                    font-weight: 600;
-                    font-family: Inter, sans-serif;
-                    margin: 0;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                '>Receita por Categoria</h3>
-            </div>
-            """, unsafe_allow_html=True)   
-    
-    col_charts1, col_charts2 = st.columns(2)
-
-    with col_charts1:
-        # Gráfico de Vendas por Categoria (Donut)
+        
         vendas_categoria = df_filtered.groupby("Categoria")["Quantidade_Vendida"].sum().reset_index()
         fig_vendas = go.Figure(data=[go.Pie(
             labels=vendas_categoria["Categoria"],
@@ -313,7 +312,24 @@ if df is not None:
         )
         st.plotly_chart(fig_vendas, use_container_width=True)
 
-    with col_charts2:
+    with col2:
+        st.markdown("""
+            <div style='
+            text-align: center;
+            padding-top: 10px;
+            '>
+                <h3 style='
+                    color: white;
+                    background: linear-gradient(to right, #c69214, #d4a642);
+                    font-size: 20px;
+                    font-weight: 600;
+                    font-family: Inter, sans-serif;
+                    margin: 0;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                '>Receita por Categoria</h3>
+            </div>
+            """, unsafe_allow_html=True)   
+    
         # Gráfico de Receita por Categoria (Barras)
         # Corrigir valores da Receita
         df_filtered["Receita_Gerada"] = pd.to_numeric(df_filtered["Receita_Gerada"], errors="coerce").fillna(0)
@@ -400,27 +416,6 @@ if df is not None:
                 '>Receita por Tipo de Cliente</h3>
             </div>
             """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-            <div style='
-                text-align: center;
-                padding-top: 10px;
-            '>
-                <h3 style='
-                    color: #FFFFFF;
-                    font-size: 20px;
-                    font-weight: 600;
-                    font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                    background: linear-gradient(to right, #c69214, #d4a642);
-                '>Volume de Vendas por Tipo de Cliente</h3>
-            </div>
-            """, unsafe_allow_html=True)   
-
-    col_client1, col_client2 = st.columns(2)
-
-    with col_client1:
         # Receita por Tipo de Cliente
         receita_cliente = df_filtered.groupby("Demografia_Cliente")["Receita_Gerada"].sum().reset_index()
         fig_receita_cliente = px.pie(
@@ -440,7 +435,22 @@ if df is not None:
         )
         st.plotly_chart(fig_receita_cliente, use_container_width=True)
 
-    with col_client2:
+    with col2:
+        st.markdown("""
+            <div style='
+                text-align: center;
+                padding-top: 10px;
+            '>
+                <h3 style='
+                    color: #FFFFFF;
+                    font-size: 20px;
+                    font-weight: 600;
+                    font-family: Inter, sans-serif;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                    background: linear-gradient(to right, #c69214, #d4a642);
+                '>Volume de Vendas por Tipo de Cliente</h3>
+            </div>
+            """, unsafe_allow_html=True)
         # Volume de Vendas por Tipo de Cliente
         vendas_cliente = df_filtered.groupby("Demografia_Cliente")["Quantidade_Vendida"].sum().reset_index()
         
@@ -482,7 +492,7 @@ if df is not None:
             tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
         ),
         )
-        st.plotly_chart(fig_vendas_cliente, use_container_width=True)
+        st.plotly_chart(fig_vendas_cliente, use_container_width=True)   
 
     custom_divider()
 
@@ -577,28 +587,6 @@ if df is not None:
                 '>Volume de Vendas por Localização</h3>
             </div>
             """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-            <div style='
-                text-align: center;
-                padding-top: 5px;
-            '>
-                <h3 style='
-                    color: #FFFFFF;
-                    font-size: 20px;
-                    font-weight: 600;
-                    font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #c69214, #d4a642);
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                '>Custo Total por Localização</h3>
-            </div>
-            """, unsafe_allow_html=True)   
-
-
-    col_geo1, col_geo2 = st.columns(2)
-
-    with col_geo1:
         # Mapa de calor por localização
         vendas_local = df_filtered.groupby("Localizacao")["Quantidade_Vendida"].sum().reset_index()
 
@@ -615,7 +603,22 @@ if df is not None:
         fig_mapa.update_layout(paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(0,0,0,0)",height=620,title_font_color=COLORS['secondary'],font=dict(family="Inter, sans-serif",size=20),)
         st.plotly_chart(fig_mapa, use_container_width=True)
 
-    with col_geo2:
+    with col2:
+        st.markdown("""
+            <div style='
+                text-align: center;
+                padding-top: 5px;
+            '>
+                <h3 style='
+                    color: #FFFFFF;
+                    font-size: 20px;
+                    font-weight: 600;
+                    font-family: Inter, sans-serif;
+                    background: linear-gradient(to right, #c69214, #d4a642);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                '>Custo Total por Localização</h3>
+            </div>
+            """, unsafe_allow_html=True)
         # Custos por localização
         custos_local = df_filtered.groupby("Localizacao")["Custos_Totais"].sum().reset_index() # Changed to sum
 
@@ -655,7 +658,7 @@ if df is not None:
             ),
         )
         st.plotly_chart(fig_custos, use_container_width=True)
-
+  
     custom_divider()
     # Tabela detalhada
     st.markdown("""
