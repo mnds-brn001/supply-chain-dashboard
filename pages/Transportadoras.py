@@ -194,7 +194,11 @@ if df is not None:
         ["Todas"] + list(df["Transportadoras"].unique()),
         help="Selecione a transportadora para filtrar os dados"
     )
-
+    selected_category = st.sidebar.multiselect(
+        "📦 Categorias de Produto",
+        options=list(df["Categoria"].unique()), 
+        default=list(df["Categoria"].unique())
+    )
     # Aplicar os filtros no DataFrame
     df_filtered = df.copy()
 
@@ -202,7 +206,8 @@ if df is not None:
         df_filtered = df_filtered[df_filtered["Modos_Transporte"] == selected_transport]
     if selected_carrier != "Todas":
         df_filtered = df_filtered[df_filtered["Transportadoras"] == selected_carrier]
-
+    if selected_category:
+        df_filtered = df_filtered[df_filtered["Categoria"].isin(selected_category)]
 
     # Header principal
     st.markdown(f"""

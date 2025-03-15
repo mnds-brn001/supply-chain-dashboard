@@ -416,7 +416,7 @@ if df is not None:
                 showlegend=True,
                 legend_font=dict(size=18,family="Inter, sans-serif"),
                 height=640,
-                font=dict(family="Inter, sans-serif",size=23),
+                font=dict(family="Inter, sans-serif",size=19),
                 title_font_color=COLORS['secondary'],
             )
             st.plotly_chart(fig_vendas, use_container_width=True)

@@ -152,7 +152,7 @@ if df is not None:
         "Shipping costs": "Custos_Envio",
         "Transportation modes": "Modos_Transporte",
         "Costs": "Custos_Totais",
-        "Product type": "Tipo_Produto",
+        "Product type": "Categoria",
         "SKU": "Produto_SKU",
         "Location": "Localizacao",
         "Revenue generated": "Receita_Gerada"
@@ -185,7 +185,7 @@ if df is not None:
 }
     # Aplicando traduções
     if df is not None:
-        df["Tipo_Produto"] = df["Tipo_Produto"].map(produto_traducao).fillna(df["Tipo_Produto"])
+        df["Categoria"] = df["Categoria"].map(produto_traducao).fillna(df["Categoria"])
         df["Modos_Transporte"] = df["Modos_Transporte"].map(transporte_traducao).fillna(df["Modos_Transporte"])
         df["Transportadoras"] = df["Transportadoras"].map(transportadora_traducao).fillna(df["Transportadoras"])
     # Sidebar com filtros
@@ -203,7 +203,8 @@ if df is not None:
         ["Todas"] + list(df["Transportadoras"].unique()),
         help="Selecione a transportadora para filtrar os dados"
     )
-
+    selected_category = st.sidebar.multiselect("📦 Categorias de Produto", options=list(df["Categoria"].unique()), default=list(df["Categoria"].unique()))
+    
     # Aplicando os filtros
     df_filtered = df.copy()
 
@@ -211,6 +212,8 @@ if df is not None:
         df_filtered = df_filtered[df_filtered["Modos_Transporte"] == selected_transport]
     if selected_carrier != "Todas":
         df_filtered = df_filtered[df_filtered["Transportadoras"] == selected_carrier]
+    if selected_category:
+        df_filtered = df_filtered[df_filtered["Categoria"].isin(selected_category)]
 
     # Calcular o prejuízo causado por defeitos
     df_filtered["Prejuizo_Defeitos"] = df_filtered["Receita_Gerada"] * (df_filtered["Taxa_Defeitos"] / 100)
@@ -304,16 +307,16 @@ if df is not None:
                 '>📉 Taxa Média de Defeitos por Categoria</h3>
             </div>
             """, unsafe_allow_html=True)
-        defeitos_categoria = df_filtered.groupby("Tipo_Produto")["Taxa_Defeitos"].mean().reset_index()
-        df_filtered.groupby("Tipo_Produto")["Taxa_Defeitos"].mean().reset_index()
+        defeitos_categoria = df_filtered.groupby("Categoria")["Taxa_Defeitos"].mean().reset_index()
+        df_filtered.groupby("Categoria")["Taxa_Defeitos"].mean().reset_index()
         # Taxa média de defeitos por categoria
-        df_filtered.groupby("Tipo_Produto")["Taxa_Defeitos"].mean().reset_index()
+        df_filtered.groupby("Categoria")["Taxa_Defeitos"].mean().reset_index()
         fig_defeitos = px.bar(
         defeitos_categoria,
-        x="Tipo_Produto",
+        x="Categoria",
         y="Taxa_Defeitos",
         title=" ",
-        color="Tipo_Produto",
+        color="Categoria",
         color_discrete_sequence=COLORS['warm_oranges']
         )
 
@@ -359,11 +362,11 @@ if df is not None:
             </div>
             """, unsafe_allow_html=True)
         # Prejuízo por categoria
-        prejuizo_categoria = df_filtered.groupby("Tipo_Produto")["Prejuizo_Defeitos"].sum().reset_index()
+        prejuizo_categoria = df_filtered.groupby("Categoria")["Prejuizo_Defeitos"].sum().reset_index()
         fig_prejuizo = px.pie(
             prejuizo_categoria,
             values="Prejuizo_Defeitos",
-            names="Tipo_Produto",
+            names="Categoria",
             title=" ",
             color_discrete_sequence=COLORS['warm_reds']
         )
@@ -418,7 +421,7 @@ if df is not None:
             top_defeitos,
             x="Taxa_Defeitos",
             y="Produto_SKU",
-            color="Tipo_Produto",
+            color="Categoria",
             title=" ",
             color_discrete_sequence=COLORS['warm_oranges'],
             text="Taxa_Defeitos"
@@ -473,7 +476,7 @@ if df is not None:
             top_prejuizo,
             x="Prejuizo_Defeitos",
             y="Produto_SKU",
-            color="Tipo_Produto",
+            color="Categoria",
             title=" ",
             color_discrete_sequence=COLORS['warm_reds'],
             text="Prejuizo_Defeitos"
@@ -643,7 +646,7 @@ if df is not None:
     # Selecionar e formatar colunas para exibição
     colunas_exibir = [
         "Produto_SKU",
-        "Tipo_Produto",
+        "Categoria",
         "Taxa_Defeitos",
         "Prejuizo_Defeitos",
         "Localizacao"
