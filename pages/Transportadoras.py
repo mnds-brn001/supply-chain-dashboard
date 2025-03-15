@@ -317,6 +317,7 @@ if df is not None:
 
 )
     fig_volume.update_layout(
+        showlegend= False,
         height=670,
         margin=dict(t=40,b=40,l=20,r=20),
         title_font_color=COLORS['warm_yellows'][0],
@@ -374,7 +375,7 @@ if df is not None:
             line=dict(width=1.5)  # Melhora visual da borda do boxplot
         )
     fig_custos.update_layout(    
-        
+        showlegend=False,
         title=" ",
         height=670,
         margin=dict(t=40,b=40,l=20,r=20),
@@ -435,6 +436,7 @@ if df is not None:
     )
     
     fig_modalidade.update_layout(
+        showlegend=False,
         height=670,
         margin=dict(t=40,b=40,l=20,r=20),
         title_font_color=COLORS['warm_yellows'][0],

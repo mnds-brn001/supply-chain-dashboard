@@ -361,6 +361,7 @@ if df is not None:
             )
 
             fig_receita.update_layout(
+                showlegend=False,
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
                 height=640,
@@ -413,7 +414,7 @@ if df is not None:
                 title=" ",
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                showlegend=True,
+                showlegend=False,
                 legend_font=dict(size=18,family="Inter, sans-serif"),
                 height=640,
                 font=dict(family="Inter, sans-serif",size=19),
@@ -479,6 +480,7 @@ if df is not None:
             textposition="outside"
         )
         fig_vendas_cliente.update_layout(
+            showlegend=False,
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             height=600,
@@ -571,6 +573,7 @@ if df is not None:
         outsidetextfont=dict(family="Inter, sans-serif",color=COLORS["cool_greens"][3])
     ))
     fig_produtos.update_layout(
+        showlegend=False,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         height=450,
