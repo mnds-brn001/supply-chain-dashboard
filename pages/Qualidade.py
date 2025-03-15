@@ -328,6 +328,7 @@ if df is not None:
         )
 
         fig_defeitos.update_layout(
+            showlegend=False,
             height=670,
             margin=dict(t=40, b=40,l=20, r=20),
             title_font_color=COLORS['secondary'],
@@ -363,15 +364,17 @@ if df is not None:
             """, unsafe_allow_html=True)
         # Prejuízo por categoria
         prejuizo_categoria = df_filtered.groupby("Categoria")["Prejuizo_Defeitos"].sum().reset_index()
-        fig_prejuizo = px.pie(
-            prejuizo_categoria,
-            values="Prejuizo_Defeitos",
-            names="Categoria",
-            title=" ",
-            color_discrete_sequence=COLORS['warm_reds']
-        )
+        fig_prejuizo = go.Figure(data=[go.Pie(
+                labels=prejuizo_categoria["Categoria"],
+                values=prejuizo_categoria["Prejuizo_Defeitos"],
+                hole=.4,
+                marker_colors=COLORS['warm_reds'],
+                textinfo='percent+label'
+        )])
         fig_prejuizo.update_layout(
-            height=700,
+            title=" ",
+            showlegend=False,
+            height=670,
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['secondary'],
             font_color=COLORS['secondary'],
@@ -434,6 +437,7 @@ if df is not None:
         )
 
         fig_top_defeitos.update_layout(
+            showlegend= False,
             height=670,
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['secondary'],
@@ -489,6 +493,7 @@ if df is not None:
         )
 
         fig_top_prejuizo.update_layout(
+            showlegend= False,
             height=670,
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['secondary'],
