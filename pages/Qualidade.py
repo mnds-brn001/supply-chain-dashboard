@@ -134,12 +134,19 @@ def kpi_card(title, value, color1,color2, help_text=None):
         unsafe_allow_html=True
     )
     if help_text:
-        st.caption(f"ℹ️ {help_text}")
+        st.markdown(
+        f"""
+        <p style="font-size: 16px; color: gray; text-align: center; font-style: italic;">
+            ℹ️ {help_text}
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
 
 if df is not None:
     # Renomear colunas para facilitar leitura
     df.rename(columns={
-        "Shipping carriers": "Transportadora",
+        "Shipping carriers": "Transportadoras",
         "Defect rates": "Taxa_Defeitos",
         "Production volumes": "Volume_Pedidos",
         "Shipping costs": "Custos_Envio",
@@ -150,7 +157,37 @@ if df is not None:
         "Location": "Localizacao",
         "Revenue generated": "Receita_Gerada"
     }, inplace=True)
+    # Dicionários de tradução
+    produto_traducao = {
+        "skincare": "Linha para Peles",
+        "haircare": "Linha para Cabelos",
+        "cosmetics": "Linha para Cosméticos"
+    }
 
+    tipo_cliente_traducao = {
+        "Female": "Feminino",
+        "Male": "Masculino",
+        "Non-Binary": "Não-Binário",
+        "Unknown": "Desconhecido"
+    }
+
+    transporte_traducao = {
+        "Road": "Rodoviário",
+        "Air": "Aéreo",
+        "Sea": "Marítimo",
+        "Rail": "Ferroviário"
+    }
+
+    transportadora_traducao = {
+        "Carrier A": "Transportadora A",
+        "Carrier B": "Transportadora B",
+        "Carrier C": "Transportadora C"
+}
+    # Aplicando traduções
+    if df is not None:
+        df["Tipo_Produto"] = df["Tipo_Produto"].map(produto_traducao).fillna(df["Tipo_Produto"])
+        df["Modos_Transporte"] = df["Modos_Transporte"].map(transporte_traducao).fillna(df["Modos_Transporte"])
+        df["Transportadoras"] = df["Transportadoras"].map(transportadora_traducao).fillna(df["Transportadoras"])
     # Sidebar com filtros
     st.sidebar.title("🔍 Filtros")
 
@@ -163,7 +200,7 @@ if df is not None:
 
     selected_carrier = st.sidebar.selectbox(
         "🏢 Transportadora",
-        ["Todas"] + list(df["Transportadora"].unique()),
+        ["Todas"] + list(df["Transportadoras"].unique()),
         help="Selecione a transportadora para filtrar os dados"
     )
 
@@ -173,7 +210,7 @@ if df is not None:
     if selected_transport != "Todas":
         df_filtered = df_filtered[df_filtered["Modos_Transporte"] == selected_transport]
     if selected_carrier != "Todas":
-        df_filtered = df_filtered[df_filtered["Transportadora"] == selected_carrier]
+        df_filtered = df_filtered[df_filtered["Transportadoras"] == selected_carrier]
 
     # Calcular o prejuízo causado por defeitos
     df_filtered["Prejuizo_Defeitos"] = df_filtered["Receita_Gerada"] * (df_filtered["Taxa_Defeitos"] / 100)
@@ -221,7 +258,7 @@ if df is not None:
             f"{taxa_defeitos:.2f}%", 
             COLORS["warm_reds"][0],
             COLORS["warm_oranges"][3],
-            "Média geral de defeitos nos produtos filtrados"
+            "Média geral de defeitos em produtos"
         )
 
     with col2:
@@ -469,7 +506,7 @@ if df is not None:
 
         st.plotly_chart(fig_top_prejuizo, use_container_width=True)
 
-        custom_divider()
+    custom_divider()
     # 📍 Análise por Localização
     st.markdown("""
         <div style='

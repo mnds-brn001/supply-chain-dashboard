@@ -14,6 +14,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
 st.markdown("""
     <style>
         /* Organização dos KPIs em telas menores */
@@ -116,7 +117,14 @@ def kpi_card(title, value, color1,color2, help_text=None):
         unsafe_allow_html=True
     )
     if help_text:
-        st.caption(f"ℹ️ {help_text}")
+        st.markdown(
+        f"""
+        <p style="font-size: 16px; color: gray; text-align: center; font-style: italic;">
+            ℹ️ {help_text}
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
 
 # Função para carregar dados
 @st.cache_data
@@ -151,6 +159,7 @@ if df is not None:
         "Manufacturing costs": "Custos_Manufatura",
         "Costs": "Custos_Totais",
         "Transportation modes": "Modos_Transporte",
+        "Production volumes": "Volume_Pedidos",
         "Shipping carriers": "Transportadoras",
         "Revenue generated": "Receita_Gerada",
         "Product type": "Categoria",
@@ -159,6 +168,40 @@ if df is not None:
         "Number of products sold": "Quantidade_Vendida",
         "Customer demographics": "Demografia_Cliente"
     }, inplace=True)
+    # Dicionários de tradução
+    produto_traducao = {
+        "skincare": "Linha para Peles",
+        "haircare": "Linha para Cabelos",
+        "cosmetics": "Linha para Cosméticos"
+    }
+
+    tipo_cliente_traducao = {
+        "Female": "Feminino",
+        "Male": "Masculino",
+        "Non-Binary": "Não-Binário",
+        "Unknown": "Desconhecido"
+    }
+
+    transporte_traducao = {
+        "Road": "Rodoviário",
+        "Air": "Aéreo",
+        "Sea": "Marítimo",
+        "Rail": "Ferroviário"
+    }
+
+    transportadora_traducao = {
+        "Carrier A": "Transportadora A",
+        "Carrier B": "Transportadora B",
+        "Carrier C": "Transportadora C"
+}
+
+
+    # Aplicando traduções
+    if df is not None:
+        df["Categoria"] = df["Categoria"].map(produto_traducao).fillna(df["Categoria"])
+        df["Demografia_Cliente"] = df["Demografia_Cliente"].map(tipo_cliente_traducao).fillna(df["Demografia_Cliente"])
+        df["Modos_Transporte"] = df["Modos_Transporte"].map(transporte_traducao).fillna(df["Modos_Transporte"])
+        df["Transportadoras"] = df["Transportadoras"].map(transportadora_traducao).fillna(df["Transportadoras"])
 
     # Sidebar - Filtros
     st.sidebar.title("🔍 Filtros")
@@ -224,7 +267,7 @@ if df is not None:
     margem_media = df_filtered["Lucro"].sum() / df_filtered["Receita_Gerada"].sum() * 100 if df_filtered["Receita_Gerada"].sum() > 0 else 0
 
     with col1:
-        kpi_card("💰 Receita Total",
+        kpi_card("💰 Faturamento Total",
                 f"R$ {df_filtered['Receita_Gerada'].sum():,.2f}",
                 COLORS['blues'][0],
                 COLORS["cool_blues"][2],
@@ -249,7 +292,7 @@ if df is not None:
                 f"{margem_media:.2f}%", 
                 COLORS['golds'][0], 
                 COLORS["golds"][4],
-                "Margem do Lucro pela Receita")
+                "Margem de lucro da operação")
 
     custom_divider()
     
@@ -275,45 +318,7 @@ if df is not None:
     col1, col2 = st.columns([1,1], gap='small')
 
     with col1:
-        st.markdown("""
-            <div style='
-            text-align: center;
-            padding-top: 10px;
-            '>
-                <h3 style='
-                    color: white;
-                    background: linear-gradient(to right, #c69214, #d4a642);
-                    font-size: 20px;
-                    font-weight: 600;
-                    font-family: Inter, sans-serif;
-                    margin: 0;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                '>Distribuição de Vendas por Categoria</h3>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        vendas_categoria = df_filtered.groupby("Categoria")["Quantidade_Vendida"].sum().reset_index()
-        fig_vendas = go.Figure(data=[go.Pie(
-            labels=vendas_categoria["Categoria"],
-            values=vendas_categoria["Quantidade_Vendida"],
-            hole=.4,
-            marker_colors=COLORS['mixed'],
-            textinfo='percent+label'
-        )])
-        fig_vendas.update_layout(
-            title=" ",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            showlegend=True,
-            legend_font=dict(size=18,family="Inter, sans-serif"),
-            height=700,
-            font=dict(family="Inter, sans-serif",size=23),
-            title_font_color=COLORS['secondary'],
-        )
-        st.plotly_chart(fig_vendas, use_container_width=True)
-
-    with col2:
-        st.markdown("""
+            st.markdown("""
             <div style='
             text-align: center;
             padding-top: 10px;
@@ -330,54 +335,91 @@ if df is not None:
             </div>
             """, unsafe_allow_html=True)   
     
-        # Gráfico de Receita por Categoria (Barras)
-        # Corrigir valores da Receita
-        df_filtered["Receita_Gerada"] = pd.to_numeric(df_filtered["Receita_Gerada"], errors="coerce").fillna(0)
+            # Gráfico de Receita por Categoria (Barras)
+            # Corrigir valores da Receita
+            df_filtered["Receita_Gerada"] = pd.to_numeric(df_filtered["Receita_Gerada"], errors="coerce").fillna(0)
 
-        # Agregação correta
-        receita_categoria = df_filtered.groupby("Categoria", as_index=False).agg({"Receita_Gerada": "sum"})
+            # Agregação correta
+            receita_categoria = df_filtered.groupby("Categoria", as_index=False).agg({"Receita_Gerada": "sum"})
 
-        
-        fig_receita = px.bar(
-            receita_categoria,
-            x="Categoria",
-            y="Receita_Gerada",
-            title=" ",
-            color="Categoria",
-            color_discrete_sequence=COLORS['mixed'],
-            hover_data={"Receita_Gerada": ":,.2f"},
-            #text_auto=True
-        )
-        fig_receita.update_traces(
-            #text=receita_categoria["Receita_Gerada"].apply(lambda x: (f"R$ {x:,.2f}")),
-            texttemplate="R$ %{y:,.2f}",
-            textposition="outside",
-            outsidetextfont=dict(color=COLORS["cool_greens"][3])
-        )
+            
+            fig_receita = px.bar(
+                receita_categoria,
+                x="Categoria",
+                y="Receita_Gerada",
+                title=" ",
+                color="Categoria",
+                color_discrete_sequence=COLORS['mixed'],
+                hover_data={"Receita_Gerada": ":,.2f"},
+                #text_auto=True
+            )
+            fig_receita.update_traces(
+                #text=receita_categoria["Receita_Gerada"].apply(lambda x: (f"R$ {x:,.2f}")),
+                texttemplate="R$ %{y:,.2f}",
+                textposition="outside",
+                outsidetextfont=dict(color=COLORS["cool_greens"][3])
+            )
 
-        fig_receita.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            height=670,
-            margin=dict(t=40,b=40,l=20,r=20),
-            title_font_color=COLORS['secondary'],
-            font=dict(family="Inter, sans-serif",size=20),
-            legend_font=dict(family="Inter, sans-serif",size=18),
-            xaxis_title="Categoria",
-            yaxis_title="Total de Receita (R$)",
-            xaxis=dict(
-                title="Categoria",
-                title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
+            fig_receita.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                height=640,
+                margin=dict(t=40,b=40,l=20,r=20),
+                title_font_color=COLORS['secondary'],
+                font=dict(family="Inter, sans-serif",size=20),
+                legend_font=dict(family="Inter, sans-serif",size=18),
+                xaxis_title="Categoria",
+                yaxis_title="Total de Receita (R$)",
+                xaxis=dict(
+                    title="Categoria",
+                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
+                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
+                ),
+            yaxis=dict(
+                title="Total de Receita (R$)",
+                title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
             ),
-        yaxis=dict(
-            title="Total de Receita (R$)",
-            title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-            tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
-        ),
-        )
-        st.plotly_chart(fig_receita, use_container_width=True)
+            )
+            st.plotly_chart(fig_receita, use_container_width=True)
 
+    with col2:
+            st.markdown("""
+                <div style='
+                text-align: center;
+                padding-top: 10px;
+                '>
+                    <h3 style='
+                        color: white;
+                        background: linear-gradient(to right, #c69214, #d4a642);
+                        font-size: 20px;
+                        font-weight: 600;
+                        font-family: Inter, sans-serif;
+                        margin: 0;
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                    '>Distribuição de Vendas por Categoria</h3>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            vendas_categoria = df_filtered.groupby("Categoria")["Quantidade_Vendida"].sum().reset_index()
+            fig_vendas = go.Figure(data=[go.Pie(
+                labels=vendas_categoria["Categoria"],
+                values=vendas_categoria["Quantidade_Vendida"],
+                hole=.4,
+                marker_colors=COLORS['mixed'],
+                textinfo='percent+label'
+            )])
+            fig_vendas.update_layout(
+                title=" ",
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                showlegend=True,
+                legend_font=dict(size=18,family="Inter, sans-serif"),
+                height=640,
+                font=dict(family="Inter, sans-serif",size=23),
+                title_font_color=COLORS['secondary'],
+            )
+            st.plotly_chart(fig_vendas, use_container_width=True)
     custom_divider()
     
     # Análise de Clientes
@@ -401,41 +443,6 @@ if df is not None:
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("""
-            <div style='
-                text-align: center;
-                padding-top: 10px;
-            '>
-                <h3 style='
-                    color: #FFFFFF;
-                    font-size: 20px;
-                    font-weight: 600;
-                    font-family: Inter, sans-serif;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                    background: linear-gradient(to right, #c69214, #d4a642);
-                '>Receita por Tipo de Cliente</h3>
-            </div>
-            """, unsafe_allow_html=True)
-        # Receita por Tipo de Cliente
-        receita_cliente = df_filtered.groupby("Demografia_Cliente")["Receita_Gerada"].sum().reset_index()
-        fig_receita_cliente = px.pie(
-            receita_cliente,
-            values="Receita_Gerada",
-            names="Demografia_Cliente",
-            title=" ",
-            color_discrete_sequence=COLORS['mixed']
-        )
-        fig_receita_cliente.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            height=600,
-            font=dict(family="Inter, sans-serif",size=23),
-            title_font_color=COLORS['secondary'],
-            legend_font=dict(family="Inter, sans-serif",size=18),  # Legenda maior
-        )
-        st.plotly_chart(fig_receita_cliente, use_container_width=True)
-
-    with col2:
         st.markdown("""
             <div style='
                 text-align: center;
@@ -493,6 +500,42 @@ if df is not None:
         ),
         )
         st.plotly_chart(fig_vendas_cliente, use_container_width=True)   
+   
+    with col2:
+        st.markdown("""
+            <div style='
+                text-align: center;
+                padding-top: 10px;
+            '>
+                <h3 style='
+                    color: #FFFFFF;
+                    font-size: 20px;
+                    font-weight: 600;
+                    font-family: Inter, sans-serif;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                    background: linear-gradient(to right, #c69214, #d4a642);
+                '>Receita por Tipo de Cliente</h3>
+            </div>
+            """, unsafe_allow_html=True)
+        # Receita por Tipo de Cliente
+        receita_cliente = df_filtered.groupby("Demografia_Cliente")["Receita_Gerada"].sum().reset_index()
+        fig_receita_cliente = px.pie(
+            receita_cliente,
+            values="Receita_Gerada",
+            names="Demografia_Cliente",
+            title=" ",
+            color_discrete_sequence=COLORS['mixed']
+        )
+        fig_receita_cliente.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            height=600,
+            font=dict(family="Inter, sans-serif",size=23),
+            title_font_color=COLORS['secondary'],
+            legend_font=dict(family="Inter, sans-serif",size=18),  # Legenda maior
+        )
+        st.plotly_chart(fig_receita_cliente, use_container_width=True)
+        
 
     custom_divider()
 
@@ -508,7 +551,7 @@ if df is not None:
             font-family: Inter, sans-serif;
             background: linear-gradient(to right, #c69214, #d4a642);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-            '>💎 Top 15 Produtos Mais Lucrativos</h2>
+            '>💎 Top 15 Produtos com Maior Faturamento</h2>
             """, unsafe_allow_html=True)
 
     # Calcular os 10 produtos mais lucrativos
@@ -530,7 +573,7 @@ if df is not None:
     fig_produtos.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        height=600,
+        height=450,
         margin=dict(t=40, b=40,l=20,r=20),
         title_font_color=COLORS['secondary'],
         font=dict(family="Inter, sans-serif",size=20),
@@ -541,9 +584,9 @@ if df is not None:
             tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
         ),
 
-        yaxis_title="Lucro (R$)",
+        yaxis_title="Faturamento (R$)",
         yaxis=dict(
-            title="Lucro (R$)",
+            title="Faturamento (R$)",
             title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
             tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
         ),
@@ -572,38 +615,6 @@ if df is not None:
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("""
-            <div style='
-                text-align: center;
-                padding-top: 5px;
-            '>
-                <h3 style='
-                    color: #FFFFFF;
-                    font-size: 20px;
-                    font-weight: 600;
-                    font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #c69214, #d4a642);
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                '>Volume de Vendas por Localização</h3>
-            </div>
-            """, unsafe_allow_html=True)
-        # Mapa de calor por localização
-        vendas_local = df_filtered.groupby("Localizacao")["Quantidade_Vendida"].sum().reset_index()
-
-        # Renomear a coluna para garantir que o nome correto apareça no gráfico
-        vendas_local.rename(columns={"Quantidade_Vendida": "Vendas"}, inplace=True)
-
-        fig_mapa = px.treemap(
-            vendas_local,
-            path=["Localizacao"],
-            values="Vendas",
-            title=" ",
-            color_discrete_sequence=COLORS['mixed'],
-        )
-        fig_mapa.update_layout(paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(0,0,0,0)",height=620,title_font_color=COLORS['secondary'],font=dict(family="Inter, sans-serif",size=20),)
-        st.plotly_chart(fig_mapa, use_container_width=True)
-
-    with col2:
         st.markdown("""
             <div style='
                 text-align: center;
@@ -658,6 +669,40 @@ if df is not None:
             ),
         )
         st.plotly_chart(fig_custos, use_container_width=True)
+        
+
+    with col2:
+        st.markdown("""
+            <div style='
+                text-align: center;
+                padding-top: 5px;
+            '>
+                <h3 style='
+                    color: #FFFFFF;
+                    font-size: 20px;
+                    font-weight: 600;
+                    font-family: Inter, sans-serif;
+                    background: linear-gradient(to right, #c69214, #d4a642);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                '>Volume de Vendas por Localização</h3>
+            </div>
+            """, unsafe_allow_html=True)
+        # Mapa de calor por localização
+        vendas_local = df_filtered.groupby("Localizacao")["Quantidade_Vendida"].sum().reset_index()
+
+        # Renomear a coluna para garantir que o nome correto apareça no gráfico
+        vendas_local.rename(columns={"Quantidade_Vendida": "Vendas"}, inplace=True)
+
+        fig_mapa = px.treemap(
+            vendas_local,
+            path=["Localizacao"],
+            values="Vendas",
+            title=" ",
+            color_discrete_sequence=COLORS['mixed'],
+        )
+        fig_mapa.update_layout(paper_bgcolor="rgba(0,0,0,0)",plot_bgcolor="rgba(0,0,0,0)",height=620,title_font_color=COLORS['secondary'],font=dict(family="Inter, sans-serif",size=20),)
+        st.plotly_chart(fig_mapa, use_container_width=True)
+        
   
     custom_divider()
     # Tabela detalhada

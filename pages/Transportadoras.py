@@ -124,20 +124,61 @@ def kpi_card(title, value, color1,color2, help_text=None):
         unsafe_allow_html=True
     )
     if help_text:
-        st.caption(f"ℹ️ {help_text}")
+        st.markdown(
+        f"""
+        <p style="font-size: 16px; color: gray; text-align: center; font-style: italic;">
+            ℹ️ {help_text}
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
 
 if df is not None:
     # Renomear colunas para facilitar leitura
     df.rename(columns={
-        "Shipping carriers": "Transportadora",
+        "Shipping carriers": "Transportadoras",
         "Production volumes": "Volume_Pedidos",
         "Shipping costs": "Custos_Envio",
         "Transportation modes": "Modos_Transporte",
         "Costs": "Custos_Totais",
+        "Product type": "Categoria",
         "Location": "Localizacao",
-        "Revenue generated": "Receita_Gerada"
+        "Revenue generated": "Receita_Gerada",
+        "Number of products sold": "Quantidade_Vendida",
     }, inplace=True)
+    # Dicionários de tradução
+    produto_traducao = {
+        "skincare": "Linha para Peles",
+        "haircare": "Linha para Cabelos",
+        "cosmetics": "Linha para Cosméticos"
+    }
 
+    tipo_cliente_traducao = {
+        "Female": "Feminino",
+        "Male": "Masculino",
+        "Non-Binary": "Não-Binário",
+        "Unknown": "Desconhecido"
+    }
+
+    transporte_traducao = {
+        "Road": "Rodoviário",
+        "Air": "Aéreo",
+        "Sea": "Marítimo",
+        "Rail": "Ferroviário"
+    }
+
+    transportadora_traducao = {
+        "Carrier A": "Transportadora A",
+        "Carrier B": "Transportadora B",
+        "Carrier C": "Transportadora C"
+}
+
+
+    # Aplicando traduções
+    if df is not None:
+        df["Categoria"] = df["Categoria"].map(produto_traducao).fillna(df["Categoria"])
+        df["Modos_Transporte"] = df["Modos_Transporte"].map(transporte_traducao).fillna(df["Modos_Transporte"])
+        df["Transportadoras"] = df["Transportadoras"].map(transportadora_traducao).fillna(df["Transportadoras"])
     # Sidebar com filtros
     st.sidebar.title("🔍 Filtros")
 
@@ -150,7 +191,7 @@ if df is not None:
 
     selected_carrier = st.sidebar.selectbox(
         "🏢 Transportadora",
-        ["Todas"] + list(df["Transportadora"].unique()),
+        ["Todas"] + list(df["Transportadoras"].unique()),
         help="Selecione a transportadora para filtrar os dados"
     )
 
@@ -160,7 +201,8 @@ if df is not None:
     if selected_transport != "Todas":
         df_filtered = df_filtered[df_filtered["Modos_Transporte"] == selected_transport]
     if selected_carrier != "Todas":
-        df_filtered = df_filtered[df_filtered["Transportadora"] == selected_carrier]
+        df_filtered = df_filtered[df_filtered["Transportadoras"] == selected_carrier]
+
 
     # Header principal
     st.markdown(f"""
@@ -180,7 +222,6 @@ if df is not None:
             '>🚛 Análise de Transportadoras</h1>
         </div>
         """, unsafe_allow_html=True)
-
     st.markdown("""
         <div style='
             text-align: center;
@@ -201,7 +242,7 @@ if df is not None:
     with col1:
         volume_total = df_filtered["Volume_Pedidos"].sum()
         kpi_card(
-            "📦 Volume Total de Pedidos",
+            "📦 Total de Pedidos",
             f"{volume_total:,}", 
             COLORS["golds"][1],
             COLORS["golds"][3],
@@ -222,15 +263,15 @@ if df is not None:
         percentual_custo_logistico = (custo_total / df_filtered["Receita_Gerada"].sum()) * 100 if df_filtered["Receita_Gerada"].sum() > 0 else 0
 
         kpi_card(
-            "📉 % Logístico sobre Receita",
-            f"{percentual_custo_logistico:.2f}%",
+            "📉 % Envio sobre Faturamento",
+            f"{percentual_custo_logistico: .2f}%",
             COLORS["cool_greens"][0],
             COLORS["cool_greens"][5],
-            "Percentual do custo de envio em relação à receita total"
+            "Percentual do custo de envio em relação ao faturamento total"
         )
 
     with col4:
-        custo_medio_transportadora = df_filtered.groupby("Transportadora")["Custos_Envio"].mean().mean()
+        custo_medio_transportadora = df_filtered.groupby("Transportadoras")["Custos_Envio"].mean().mean()
 
         kpi_card(
             "📊 Custo Médio de Envio",
@@ -257,11 +298,11 @@ if df is not None:
 
     # Gráfico de barras com volume de pedidos
     fig_volume = px.bar(
-        df_filtered.groupby("Transportadora")["Volume_Pedidos"].sum().reset_index(),
-        x="Transportadora",
+        df_filtered.groupby("Transportadoras")["Volume_Pedidos"].sum().reset_index(),
+        x="Transportadoras",
         y="Volume_Pedidos",
         title=" ",
-        color="Transportadora",
+        color="Transportadoras",
         color_discrete_sequence=COLORS['golds']
     )
     fig_volume.update_traces(
@@ -314,11 +355,11 @@ if df is not None:
     # Box plot de custos
 
     fig_custos = go.Figure()
-    for transportadora in df_filtered["Transportadora"].unique():
-        dados_transp = df_filtered[df_filtered["Transportadora"] == transportadora]
+    for transportadoras in df_filtered["Transportadoras"].unique():
+        dados_transp = df_filtered[df_filtered["Transportadoras"] == transportadoras]
         fig_custos.add_trace(go.Box(
             y=dados_transp["Custos_Envio"],
-            name=transportadora,
+            name=transportadoras,
             marker_color=COLORS["warm_yellows"][1],
             #boxmean='sd'
         ))
@@ -504,7 +545,7 @@ if df is not None:
 
     # Selecionar e formatar colunas para exibição
     colunas_exibir = [
-        "Transportadora",
+        "Transportadoras",
         "Modos_Transporte",
         "Localizacao",
         "Volume_Pedidos",
