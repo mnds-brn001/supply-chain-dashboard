@@ -212,7 +212,7 @@ if df is not None:
         st.session_state.selected_carrier = "Todas"
     if "selected_category" not in st.session_state:
         st.session_state.selected_category = list(df["Categoria"].unique())
-    
+
     # Filtros
     st.session_state.selected_transport = st.sidebar.selectbox(
         "🚛 Modo de Transporte",
@@ -604,7 +604,7 @@ if df is not None:
         showlegend=False,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        height=450,
+        height=500,
         margin=dict(t=40, b=40,l=20,r=20),
         title_font_color=COLORS['secondary'],
         font=dict(family="Inter, sans-serif",size=20),
