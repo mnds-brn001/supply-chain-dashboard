@@ -188,32 +188,56 @@ if df is not None:
         df["Categoria"] = df["Categoria"].map(produto_traducao).fillna(df["Categoria"])
         df["Modos_Transporte"] = df["Modos_Transporte"].map(transporte_traducao).fillna(df["Modos_Transporte"])
         df["Transportadoras"] = df["Transportadoras"].map(transportadora_traducao).fillna(df["Transportadoras"])
-    # Sidebar com filtros
-    st.sidebar.title("🔍 Filtros")
+    
+    # Inicializa os valores dos filtros no session_state se ainda não existirem
+    for key in ["selected_category", "selected_transportadora", "selected_mode"]:
+        if key not in st.session_state:
+            st.session_state[key] = None if key != "selected_category" else []
 
+    # Sidebar para filtros
+    st.sidebar.header("🔍 Filtros")
+
+    # Inicializar session state para armazenar filtros
+    if "selected_transport" not in st.session_state:
+        st.session_state.selected_transport = "Todas"
+    if "selected_carrier" not in st.session_state:
+        st.session_state.selected_carrier = "Todas"
+    if "selected_category" not in st.session_state:
+        st.session_state.selected_category = list(df["Categoria"].unique())
+    
     # Filtros
-    selected_transport = st.sidebar.selectbox(
+    st.session_state.selected_transport = st.sidebar.selectbox(
         "🚛 Modo de Transporte",
         ["Todas"] + list(df["Modos_Transporte"].unique()),
-        help="Selecione o modo de transporte para filtrar os dados"
+        index=(["Todas"] + list(df["Modos_Transporte"].unique())).index(st.session_state.selected_transport)
     )
 
-    selected_carrier = st.sidebar.selectbox(
+    st.session_state.selected_carrier = st.sidebar.selectbox(
         "🏢 Transportadora",
         ["Todas"] + list(df["Transportadoras"].unique()),
-        help="Selecione a transportadora para filtrar os dados"
+        index=(["Todas"] + list(df["Transportadoras"].unique())).index(st.session_state.selected_carrier)
     )
-    selected_category = st.sidebar.multiselect("📦 Categorias de Produto", options=list(df["Categoria"].unique()), default=list(df["Categoria"].unique()))
+
+    st.session_state.selected_category = st.sidebar.multiselect(
+        "📦 Categorias de Produto",
+        options=list(df["Categoria"].unique()),
+        default=st.session_state.selected_category
+    )
     
     # Aplicando os filtros
     df_filtered = df.copy()
 
-    if selected_transport != "Todas":
-        df_filtered = df_filtered[df_filtered["Modos_Transporte"] == selected_transport]
-    if selected_carrier != "Todas":
-        df_filtered = df_filtered[df_filtered["Transportadoras"] == selected_carrier]
-    if selected_category:
-        df_filtered = df_filtered[df_filtered["Categoria"].isin(selected_category)]
+    if st.session_state.selected_transport != "Todas":
+        df_filtered = df_filtered[df_filtered["Modos_Transporte"] == st.session_state.selected_transport]
+    if st.session_state.selected_carrier != "Todas":
+        df_filtered = df_filtered[df_filtered["Transportadoras"] == st.session_state.selected_carrier]
+    if st.session_state.selected_category:
+        df_filtered = df_filtered[df_filtered["Categoria"].isin(st.session_state.selected_category)]
+
+    # Calculando campos adicionais
+    df_filtered["Receita_Gerada"] = pd.to_numeric(df_filtered["Receita_Gerada"], errors="coerce").fillna(0)
+    df_filtered['Lucro'] = df_filtered['Receita_Gerada'] - df_filtered['Custos_Totais']
+    df_filtered['Margem'] = (df_filtered['Lucro'] / df_filtered['Receita_Gerada']) * 100
 
     # Calcular o prejuízo causado por defeitos
     df_filtered["Prejuizo_Defeitos"] = df_filtered["Receita_Gerada"] * (df_filtered["Taxa_Defeitos"] / 100)

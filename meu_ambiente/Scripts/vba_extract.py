@@ -1,4 +1,4 @@
-#!C:\Users\user\Documents\Python Data Projects\Logistics_D.A\meu_ambiente\Scripts\python.exe
+#!C:\Users\user\Documents\Python Data Projects\supply-chain-dashboard\meu_ambiente\Scripts\python.exe
 
 ##############################################################################
 #
