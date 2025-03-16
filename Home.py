@@ -4,6 +4,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
 from datetime import datetime
+import seaborn as sns
+import matplotlib.pyplot as plt
 import io
 import os
 
@@ -62,6 +64,7 @@ COLORS = {
     'primary': '#1a365d',  # Azul profundo
     'secondary': '#FFD700',  # Dourado queimado
     'tertiary': '#4A4A4A', #7D1128  # Cinza Chumbo
+    'highlight': '#E74C3C',
 
     
     # Azuis (tons frios)
@@ -76,8 +79,8 @@ COLORS = {
     'cool_greens': ['#1a5632', '#0e4025', '#1abc9c', '#16a085', '#28cdc4', '#3cebea', '#1ee0cc', '#1d7979'],
 
     # Tons quentes para equilibrar os azuis
-    'warm_oranges': ['#d95e30', '#e67e22', '#b45309', '#d35400'],  
-    'warm_reds': ['#7D1128', '#c0392b', '#a93226', '#8B1E3F'],  
+    'warm_oranges': ['#d95e30', '#e67e22', '#b45309', '#d35400','#ff7f50'],  
+    'warm_reds': ['#7D1128', '#c0392b', '#a93226', '#8B1E3F','#ff6347'],  
 
     # Paleta mista final
     'mixed': ['#1a365d', '#1b2e7b', '#c69214', '#2a4a7f', '#d4a642', '#3a5ea1', '#d9a500', '#4b72c4', 
@@ -658,7 +661,7 @@ if df is not None:
                     font-family: Inter, sans-serif;
                     background: linear-gradient(to right, #c69214, #d4a642);
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                '>Custo Total por Localização</h3>
+                '>Faturamento vs. Custo por Localização</h3>
             </div>
             """, unsafe_allow_html=True)
         # Custos por localização
@@ -667,39 +670,47 @@ if df is not None:
         # Renomeando coluna para maior clareza
         custos_local.rename(columns={"Custos_Totais": "Custo Total"}, inplace=True)
 
-        fig_custos = px.bar(
-            custos_local,
-            x="Localizacao",
-            y="Custo Total",
+        receita_local = df_filtered.groupby("Localizacao")["Receita_Gerada"].sum().reset_index()
+        custos_local = df_filtered.groupby("Localizacao")["Custos_Totais"].sum().reset_index()
+        
+
+        fig_geo = go.Figure()
+    
+        # Barra Principal - Receita Total
+        fig_geo.add_trace(go.Bar(
+            x=receita_local["Localizacao"],
+            y=receita_local["Receita_Gerada"],
+            name="Receita Total",
+            marker=dict(color=COLORS['blues'][2]),
+            text=[f"R$ {x:,.2f}" for x in receita_local["Receita_Gerada"]],
+            textposition='outside',
+            outsidetextfont=dict(color=COLORS['cool_greens'][2])
+        ))
+
+        
+        # Barra Secundária - Custo Total (Mais fina)
+        fig_geo.add_trace(go.Bar(
+            x=custos_local["Localizacao"],
+            y=custos_local["Custos_Totais"],
+            name="Custo Total",
+            marker=dict(color=COLORS['warm_oranges'][3]),
+            width=0.2,  # Define uma barra mais fina
+            offset= -0.5
+        ))
+        
+        fig_geo.update_layout(
+            barmode="group",
             title=" ",
-            color_discrete_sequence=COLORS['blues'],
-        )
-        fig_custos.update_traces(
-            text=[f"R$ {x:,.2f}" for x in custos_local["Custo Total"]],
-            textposition="outside",
-            outsidetextfont=dict(color=COLORS["warm_reds"][1])
-        )
-        fig_custos.update_layout(
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             height=600,
-            margin=dict(t=40,b=40,l=20,r=20),
-            title_font_color=COLORS['secondary'],
-            font=dict(family="Inter, sans-serif",size=18),
-            xaxis_title="Localizacao",
-            yaxis_title="Total de Custos (R$)",
-            xaxis=dict(
-                title="Cidades",
-                title_font=dict(family="Inter, sans-serif",size=18),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
-            ),
-            yaxis=dict(
-                title="Custo Total Envio (R$)",
-                title_font=dict(family="Inter, sans-serif",size=18),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
-            ),
+            font=dict(family="Inter, sans-serif", size=18),
+            xaxis_title="Localização",
+            yaxis_title="Valores (R$)",
+            legend=dict(font=dict(size=16)),
         )
-        st.plotly_chart(fig_custos, use_container_width=True)
+
+        st.plotly_chart(fig_geo, use_container_width=True)
         
 
     with col2:
