@@ -4,7 +4,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
 from datetime import datetime
-import seaborn as sns
 import matplotlib.pyplot as plt
 import io
 import os
