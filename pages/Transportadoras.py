@@ -479,7 +479,120 @@ if df is not None:
 
     # Custos por Cidade
     with col4:
-        # 🌆 Análise de Custos por Cidade
+         # 📊 Scatter Plot - Volume x Custo Médio por Modalidade
+        st.markdown(f"""
+            <div style='text-align: center; padding-top: 10px;'>
+                <h2 style='
+                    color: #FFFFFF;
+                    font-size: 29px;
+                    font-weight: bold;
+                    font-family: Inter, sans-serif;
+                    background: linear-gradient(to right, #1a5632, #16a085);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+                '>🧭 Volume vs. C.M. de Envio por Modal de Transporte</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        modalidade_data = df_filtered.groupby("Modos_Transporte").agg({
+            "Quantidade_Vendida": "sum",
+            "Custos_Totais": "sum"
+        }).reset_index()
+        modalidade_data["Custo Médio"] = modalidade_data["Custos_Totais"] / modalidade_data["Quantidade_Vendida"]
+        
+        fig_modalidade = px.scatter(
+            modalidade_data,
+            x="Quantidade_Vendida",
+            y="Custo Médio",
+            size="Custos_Totais",
+            color="Modos_Transporte",
+            text="Modos_Transporte",
+            title=" ",
+            labels={"Quantidade_Vendida": "Volume de Pedidos", "Custo Médio": "Custo Médio (R$)"},
+            hover_data={"Modos_Transporte": True, "Quantidade_Vendida": True, "Custo Médio": True, "Custos_Totais": True},
+        )
+        
+        fig_modalidade.update_traces(textposition="top center")
+        fig_modalidade.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            height=640,
+            font=dict(family="Inter, sans-serif", size=18),
+        )
+        
+        st.plotly_chart(fig_modalidade, use_container_width=True)
+        st.markdown("""
+            <div style='text-align: center; font-size: 18px; font-weight: 500; color: #FFD700; padding-top: 5px;'>
+                🔍 O modal mais barato pode não ser o mais eficiente. Analise o equilíbrio entre custo e volume para otimizar a alocação de transporte.
+            </div>
+            """, unsafe_allow_html=True)
+        
+    
+    custom_divider()
+    col5, col6 = st.columns(2)
+
+    with col5:
+        # 📊 Gráfico de Receita vs Custo por Transportadora
+        st.markdown(f"""
+            <div style='text-align: center; padding-top: 10px;'>
+                <h2 style='
+                    color: #FFFFFF;
+                    font-size: 29px;
+                    font-weight: bold;
+                    font-family: Inter, sans-serif;
+                    background: linear-gradient(to right, #c69214, #d4a642);
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+                '>⚖️ Faturamento vs. Custo por Transportadora</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        receita_transportadora = df_filtered.groupby("Transportadoras")["Receita_Gerada"].sum().reset_index()
+        custo_transportadora = df_filtered.groupby("Transportadoras")["Custos_Totais"].sum().reset_index()
+        
+        fig_transp = go.Figure()
+        
+        # Barra Principal - Receita Total
+        fig_transp.add_trace(go.Bar(
+            x=receita_transportadora["Transportadoras"],
+            y=receita_transportadora["Receita_Gerada"],
+            name="Receita Total",
+            marker=dict(color='#2a4a7f'),
+            text=[f"R$ {x:,.2f}" for x in receita_transportadora["Receita_Gerada"]],
+            textposition='outside',
+            width= 0.5,
+            outsidetextfont=dict(color=COLORS['cool_greens'][2])
+        ))
+        
+        # Barra Secundária - Custo Total
+        fig_transp.add_trace(go.Bar(
+            x=custo_transportadora["Transportadoras"],
+            y=custo_transportadora["Custos_Totais"],
+            name="Custo Total",
+            marker=dict(color=COLORS["warm_oranges"][4]),
+            width=0.1888,
+            offset= -0.4
+        ))
+        
+        fig_transp.update_layout(
+            barmode="group",
+            title=" ",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            height=640,
+            font=dict(family="Inter, sans-serif", size=18),
+            xaxis_title="Transportadora",
+            yaxis_title="Valores (R$)",
+            legend=dict(font=dict(size=16)),
+        )
+
+        st.plotly_chart(fig_transp, use_container_width=True)
+        st.markdown("""
+            <div style='text-align: center; font-size: 18px; font-weight: 500; color: #FFD700; padding-top: 5px;'>
+                🔍 Transportadoras com alto custo e baixa receita podem indicar ineficiência ou tarifas desfavoráveis. Avalie renegociações e redistribuições estratégicas.
+            </div>
+            """, unsafe_allow_html=True)
+    
+
+    with col6:
+       # 🌆 Análise de Custos por Cidade
         st.markdown("""
             <div style='text-align: center; padding-top: 10px;'>
                 <h2 style='
@@ -545,118 +658,6 @@ if df is not None:
             <div style='text-align: center; font-size: 18px; font-weight: 500; color: #FFD700; padding-top: 5px;'>
                 🔍 Regiões de alto custo podem indicar gargalos logísticos. 
                 Avalie transportadoras locais e a viabilidade de novos hubs.
-            </div>
-            """, unsafe_allow_html=True)
-    
-    custom_divider()
-    col5, col6 = st.columns(2)
-
-    with col5:
-        # 📊 Gráfico de Receita vs Custo por Transportadora
-        st.markdown(f"""
-            <div style='text-align: center; padding-top: 10px;'>
-                <h2 style='
-                    color: #FFFFFF;
-                    font-size: 29px;
-                    font-weight: bold;
-                    font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #c69214, #d4a642);
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-                '>⚖️ Faturamento vs. Custo por Transportadora</h2>
-            </div>
-            """, unsafe_allow_html=True)
-        receita_transportadora = df_filtered.groupby("Transportadoras")["Receita_Gerada"].sum().reset_index()
-        custo_transportadora = df_filtered.groupby("Transportadoras")["Custos_Totais"].sum().reset_index()
-        
-        fig_transp = go.Figure()
-        
-        # Barra Principal - Receita Total
-        fig_transp.add_trace(go.Bar(
-            x=receita_transportadora["Transportadoras"],
-            y=receita_transportadora["Receita_Gerada"],
-            name="Receita Total",
-            marker=dict(color='#2a4a7f'),
-            text=[f"R$ {x:,.2f}" for x in receita_transportadora["Receita_Gerada"]],
-            textposition='outside',
-            width= 0.5,
-            outsidetextfont=dict(color=COLORS['cool_greens'][2])
-        ))
-        
-        # Barra Secundária - Custo Total
-        fig_transp.add_trace(go.Bar(
-            x=custo_transportadora["Transportadoras"],
-            y=custo_transportadora["Custos_Totais"],
-            name="Custo Total",
-            marker=dict(color=COLORS["warm_oranges"][4]),
-            width=0.1888,
-            offset= -0.4
-        ))
-        
-        fig_transp.update_layout(
-            barmode="group",
-            title=" ",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            height=600,
-            font=dict(family="Inter, sans-serif", size=18),
-            xaxis_title="Transportadora",
-            yaxis_title="Valores (R$)",
-            legend=dict(font=dict(size=16)),
-        )
-
-        st.plotly_chart(fig_transp, use_container_width=True)
-        st.markdown("""
-            <div style='text-align: center; font-size: 18px; font-weight: 500; color: #FFD700; padding-top: 5px;'>
-                🔍 Transportadoras com alto custo e baixa receita podem indicar ineficiência ou tarifas desfavoráveis. Avalie renegociações e redistribuições estratégicas.
-            </div>
-            """, unsafe_allow_html=True)
-    
-
-    with col6:
-        # 📊 Scatter Plot - Volume x Custo Médio por Modalidade
-        st.markdown(f"""
-            <div style='text-align: center; padding-top: 10px;'>
-                <h2 style='
-                    color: #FFFFFF;
-                    font-size: 29px;
-                    font-weight: bold;
-                    font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #c69214, #d4a642);
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-                '>🧭 Volume vs. C.M. de Envio por Modal de Transporte</h2>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        modalidade_data = df_filtered.groupby("Modos_Transporte").agg({
-            "Quantidade_Vendida": "sum",
-            "Custos_Totais": "sum"
-        }).reset_index()
-        modalidade_data["Custo Médio"] = modalidade_data["Custos_Totais"] / modalidade_data["Quantidade_Vendida"]
-        
-        fig_modalidade = px.scatter(
-            modalidade_data,
-            x="Quantidade_Vendida",
-            y="Custo Médio",
-            size="Custos_Totais",
-            color="Modos_Transporte",
-            text="Modos_Transporte",
-            title=" ",
-            labels={"Quantidade_Vendida": "Volume de Pedidos", "Custo Médio": "Custo Médio (R$)"},
-            hover_data={"Modos_Transporte": True, "Quantidade_Vendida": True, "Custo Médio": True, "Custos_Totais": True},
-        )
-        
-        fig_modalidade.update_traces(textposition="top center")
-        fig_modalidade.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            height=600,
-            font=dict(family="Inter, sans-serif", size=18),
-        )
-        
-        st.plotly_chart(fig_modalidade, use_container_width=True)
-        st.markdown("""
-            <div style='text-align: center; font-size: 18px; font-weight: 500; color: #FFD700; padding-top: 5px;'>
-                🔍 O modal mais barato pode não ser o mais eficiente. Analise o equilíbrio entre custo e volume para otimizar a alocação de transporte.
             </div>
             """, unsafe_allow_html=True)
         
