@@ -126,7 +126,7 @@ def kpi_card(title, value, color1,color2, help_text=None):
     if help_text:
         st.markdown(
         f"""
-        <p style="font-size: 16px; color: gray; text-align: center; font-style: italic;">
+        <p style="font-size: 18px; color: gray; text-align: center; font-style: italic;">
             ℹ️ {help_text}
         </p>
         """,
@@ -331,7 +331,7 @@ if df is not None:
     )
         fig_volume.update_layout(
             showlegend= False,
-            height=550,
+            height=580,
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['warm_yellows'][0],
             font_color=COLORS['warm_yellows'][0],
@@ -385,7 +385,7 @@ if df is not None:
             marker=dict(color=COLORS["blues"][1]),
             text=[f"R$ {x:,.2f}" for x in receita_transportadora["Receita_Gerada"]],
             textposition='outside',
-            width= 0.5,
+            width= 0.6,
             outsidetextfont=dict(color=COLORS['cool_greens'][2])
         ))
         
@@ -404,8 +404,8 @@ if df is not None:
             title=" ",
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            height=550,
-            font=dict(family="Inter, sans-serif", size=18),
+            height=580,
+            font=dict(family="Inter, sans-serif", size=20),
             xaxis_title="Transportadora",
             yaxis_title="Valores (R$)",
             legend=dict(font=dict(size=16)),
@@ -479,7 +479,7 @@ if df is not None:
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             height=640,
-            font=dict(family="Inter, sans-serif", size=18),
+            font=dict(family="Inter, sans-serif", size=19),
             xaxis_title="Valores (R$ e Unidades)",
             yaxis_title="Modalidade de Transporte",
             legend=dict(font=dict(size=16)),

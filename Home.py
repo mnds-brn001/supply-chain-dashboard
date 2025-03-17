@@ -120,7 +120,7 @@ def kpi_card(title, value, color1,color2, help_text=None):
     if help_text:
         st.markdown(
         f"""
-        <p style="font-size: 16px; color: gray; text-align: center; font-style: italic;">
+        <p style="font-size: 18px; color: gray; text-align: center; font-style: italic;">
             ℹ️ {help_text}
         </p>
         """,
