@@ -661,7 +661,7 @@ if df is not None:
         fig_custos.update_layout(    
             showlegend=False,
             title=" ",
-            height=550,
+            height=640,
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['warm_yellows'][0],
             font_color=COLORS['warm_yellows'][0],
