@@ -258,7 +258,7 @@ if df is not None:
         padding: 15px;
         border-radius: 10px;
         text-align: center;
-        background: linear-gradient(135deg, {COLORS["cool_blues"][1]}, {COLORS["golds"][0]});
+        background: linear-gradient(135deg, {COLORS["cool_blues"][1]}, {COLORS["cool_greens"][3]});
         box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
     '>
         <h1 style='
@@ -298,8 +298,8 @@ if df is not None:
     with col1:
         kpi_card("💰 Faturamento Total",
                 f"R$ {df_filtered['Receita_Gerada'].sum():,.2f}",
-                COLORS['blues'][0],
-                COLORS["cool_blues"][2],
+                COLORS['cool_blues'][1],
+                COLORS['cool_greens'][3],
                 "Soma total da receita gerada")
 
     with col2:
@@ -312,15 +312,15 @@ if df is not None:
     with col3:
         kpi_card("🚛 Total Logística", 
                 f"R$ {df_filtered['Custos_Totais'].sum():,.2f}", 
-                COLORS['warm_oranges'][1], 
-                COLORS["golds"][1],
+                COLORS['cool_blues'][1],
+                COLORS['cool_greens'][3],
                 "Custo Total do Envio de Pedidos")
 
     with col4:
         kpi_card("📈 Margem Média", 
                 f"{margem_media:.2f}%", 
-                COLORS['golds'][0], 
-                COLORS["golds"][4],
+                COLORS['cool_blues'][1],
+                COLORS['cool_greens'][3],
                 "Margem de lucro da operação")
 
     custom_divider()
@@ -334,7 +334,7 @@ if df is not None:
         '>
             <h2 style='
                 color: white;
-                background: linear-gradient(to right, #c69214, #d4a642);
+                background: linear-gradient(135deg, #1b2e7b, #16a085);
                 font-size: 29px;
                 font-weight: bold;
                 font-family: Inter, sans-serif;
@@ -354,7 +354,7 @@ if df is not None:
             '>
                 <h3 style='
                     color: white;
-                    background: linear-gradient(to right, #c69214, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #16a085);
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
@@ -421,7 +421,7 @@ if df is not None:
                 '>
                     <h3 style='
                         color: white;
-                        background: linear-gradient(to right, #c69214, #d4a642);
+                        background: linear-gradient(135deg, #1b2e7b, #16a085);
                         font-size: 20px;
                         font-weight: 600;
                         font-family: Inter, sans-serif;
@@ -463,7 +463,7 @@ if df is not None:
             font-size: 29px;
             font-weight: bold;
             font-family: Inter, sans-serif;
-            background: linear-gradient(to right, #c69214, #d4a642);
+            background: linear-gradient(135deg, #1b2e7b, #16a085);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>👥 Análise de Clientes</h2>
             </div>
@@ -484,7 +484,7 @@ if df is not None:
                     font-weight: 600;
                     font-family: Inter, sans-serif;
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                    background: linear-gradient(to right, #c69214, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #16a085);
                 '>Volume de Vendas por Tipo de Cliente</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -544,7 +544,7 @@ if df is not None:
                     font-weight: 600;
                     font-family: Inter, sans-serif;
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                    background: linear-gradient(to right, #c69214, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #16a085);
                 '>Receita por Tipo de Cliente</h3>
             </div>
             """, unsafe_allow_html=True)
@@ -580,7 +580,7 @@ if df is not None:
             font-size: 30px;
             font-weight: bold;
             font-family: Inter, sans-serif;
-            background: linear-gradient(to right, #c69214, #d4a642);
+            background: linear-gradient(135deg, #1b2e7b, #16a085);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>💎 Top 15 Produtos com Maior Faturamento</h2>
             """, unsafe_allow_html=True)
@@ -638,7 +638,7 @@ if df is not None:
             font-size: 30px;
             font-weight: bold;
             font-family: Inter, sans-serif;
-            background: linear-gradient(to right, #c69214, #d4a642);
+            background: linear-gradient(135deg, #1b2e7b, #16a085);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
             '>📍 Análise Geográfica</h2>
             """, unsafe_allow_html=True)
@@ -657,7 +657,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #c69214, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #16a085);
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>Faturamento vs. Custo por Localização</h3>
             </div>
@@ -722,7 +722,7 @@ if df is not None:
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #c69214, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #16a085);
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                 '>Volume de Vendas por Localização</h3>
             </div>
@@ -752,11 +752,11 @@ if df is not None:
         padding-top: 10px;
     '>
         <h2 style='
-            color: #7D1128;
+            color: #FFFFFF;
             font-size: 30px;
             font-weight: bold;
             font-family: Inter, sans-serif;
-            background: linear-gradient(to right, #c69214, #d4a642);
+            background: linear-gradient(135deg, #1b2e7b, #16a085);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             '>📋 Dados Detalhados</h2>
             """, unsafe_allow_html=True)

@@ -310,7 +310,7 @@ if df is not None:
                 font-size: 29px;
                 font-weight: bold;
                 font-family: Inter, sans-serif;
-                background: linear-gradient(to right, #c69214, #d4a642);
+                background: linear-gradient(to right, #5A0E17, #d35400);
                 text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📊 Análise de Defeitos por Categoria</h2>
         </div>
@@ -323,7 +323,7 @@ if df is not None:
             <div style='text-align: center; padding-top: 10px;'>
                 <h3 style='
                     color: white;
-                    background: linear-gradient(to right, #c69214, #d4a642);
+                    background: linear-gradient(to right, #5A0E17, #d35400);
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
@@ -378,7 +378,7 @@ if df is not None:
             <div style='text-align: center; padding-top: 10px;'>
                 <h3 style='
                     color: white;
-                    background: linear-gradient(to right, #c69214, #d4a642);
+                    background: linear-gradient(to right, #5A0E17, #d35400);
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
@@ -420,7 +420,7 @@ if df is not None:
                 font-size: 29px;
                 font-weight: bold;
                 font-family: Inter, sans-serif;
-                background: linear-gradient(to right, #c0392b, #d92e1c);
+                background: linear-gradient(to right, #5A0E17, #d35400);
                 text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>❌ Produtos Críticos</h2>
         </div>
@@ -433,7 +433,7 @@ if df is not None:
             <div style='text-align: center; padding-top: 10px;'>
                 <h3 style='
                     color: white;
-                    background: linear-gradient(to right, #c0392b, #d92e1c);
+                    background: linear-gradient(to right,#5A0E17, #d35400);
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
@@ -489,7 +489,7 @@ if df is not None:
             <div style='text-align: center; padding-top: 10px;'>
                 <h3 style='
                     color: white;
-                    background: linear-gradient(to right, #c0392b, #d92e1c);
+                    background: linear-gradient(to right, #5A0E17, #d35400);
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
@@ -550,7 +550,7 @@ if df is not None:
                 font-size: 29px;
                 font-weight: bold;
                 font-family: Inter, sans-serif;
-                background: linear-gradient(to right, #1a5632, #16a085);
+                background: linear-gradient(to right, #5A0E17, #d35400);
                 text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📍 Análise por Localização</h2>
         </div>
@@ -563,7 +563,7 @@ if df is not None:
             <div style='text-align: center; padding-top: 10px;'>
                 <h3 style='
                     color: white;
-                    background: linear-gradient(to right, #1a5632, #16a085);
+                    background: linear-gradient(to right, #5A0E17, #d35400);
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
@@ -610,7 +610,7 @@ if df is not None:
             <div style='text-align: center; padding-top: 10px;'>
                 <h3 style='
                     color: white;
-                    background: linear-gradient(to right, #1a5632, #16a085);
+                    background: linear-gradient(to right, #5A0E17, #d35400);
                     font-size: 20px;
                     font-weight: 600;
                     font-family: Inter, sans-serif;
@@ -666,7 +666,7 @@ if df is not None:
                 font-size: 29px;
                 font-weight: bold;
                 font-family: Inter, sans-serif;
-                background: linear-gradient(to right, #7D1128, #c0392b);
+                background: linear-gradient(to right, #5A0E17, #d35400);
                 text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📋 Dados Detalhados</h2>
         </div>
