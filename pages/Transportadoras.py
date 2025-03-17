@@ -308,7 +308,7 @@ if df is not None:
                     font-size: 29px;
                     font-weight: bold;
                     font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #1b2e7b, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #d4a642);
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
                 '>📦 Volume de Pedidos por Transportadora</h2>
             </div>
@@ -359,59 +359,65 @@ if df is not None:
     
     # Custos de Envio por Transportadora
     with col2:
-        st.markdown("""
+        # 📊 Gráfico de Receita vs Custo por Transportadora
+        st.markdown(f"""
             <div style='text-align: center; padding-top: 10px;'>
                 <h2 style='
                     color: #FFFFFF;
                     font-size: 29px;
                     font-weight: bold;
                     font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #1b2e7b, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #d4a642);
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-                '>💰 Custos de Envio por Transportadora</h2>
+                '>⚖️ Faturamento vs. Custo por Transportadora</h2>
             </div>
             """, unsafe_allow_html=True)
-
-        # Box plot de custos
-
-        fig_custos = go.Figure()
-        for transportadoras in df_filtered["Transportadoras"].unique():
-            dados_transp = df_filtered[df_filtered["Transportadoras"] == transportadoras]
-            fig_custos.add_trace(go.Box(
-                y=dados_transp["Custos_Envio"],
-                name=transportadoras,
-                marker_color=COLORS["warm_reds"][2],
-                #boxmean='sd'
-            ))
-
-            fig_custos.update_traces(
-                marker=dict(opacity=0.8),  # Reduz impacto de outliers
-                line=dict(width=1.5)  # Melhora visual da borda do boxplot
-            )
-        fig_custos.update_layout(    
-            showlegend=False,
+        receita_transportadora = df_filtered.groupby("Transportadoras")["Receita_Gerada"].sum().reset_index()
+        custo_transportadora = df_filtered.groupby("Transportadoras")["Custos_Totais"].sum().reset_index()
+        
+        fig_transp = go.Figure()
+        
+        # Barra Principal - Receita Total
+        fig_transp.add_trace(go.Bar(
+            x=receita_transportadora["Transportadoras"],
+            y=receita_transportadora["Receita_Gerada"],
+            name="Receita Total",
+            marker=dict(color=COLORS["blues"][1]),
+            text=[f"R$ {x:,.2f}" for x in receita_transportadora["Receita_Gerada"]],
+            textposition='outside',
+            width= 0.5,
+            outsidetextfont=dict(color=COLORS['cool_greens'][2])
+        ))
+        
+        # Barra Secundária - Custo Total
+        fig_transp.add_trace(go.Bar(
+            x=custo_transportadora["Transportadoras"],
+            y=custo_transportadora["Custos_Totais"],
+            name="Custo Total",
+            marker=dict(color=COLORS["warm_reds"][2]),
+            width=0.1888,
+            offset= -0.4
+        ))
+        
+        fig_transp.update_layout(
+            barmode="group",
             title=" ",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
             height=550,
-            margin=dict(t=40,b=40,l=20,r=20),
-            title_font_color=COLORS['warm_yellows'][0],
-            font_color=COLORS['warm_yellows'][0],
-            font=dict(family="Inter, sans-serif",size=20),
-            legend_font=dict(family="Inter, sans-serif",size=18),
-
-            yaxis=dict(
-                    title="Custos de Envio (R$)",
-                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
-                ),
+            font=dict(family="Inter, sans-serif", size=18),
+            xaxis_title="Transportadora",
+            yaxis_title="Valores (R$)",
+            legend=dict(font=dict(size=16)),
         )
-        st.plotly_chart(fig_custos, use_container_width=True)
-        st.markdown("""
-        <div style='text-align: center; font-size: 18px; font-weight: 500; color: #FFD700; padding-top: 5px;'>
-            🔍 Custos elevados podem indicar falhas operacionais ou tarifas desfavoráveis. 
-            Monitore picos anormais e avalie ajustes.
-        </div>
-        """, unsafe_allow_html=True)
 
+        st.plotly_chart(fig_transp, use_container_width=True)
+        st.markdown("""
+            <div style='text-align: center; font-size: 18px; font-weight: 500; color: #FFD700; padding-top: 5px;'>
+                🔍 Transportadoras com alto custo e baixa receita podem indicar ineficiência ou tarifas desfavoráveis. Avalie renegociações e redistribuições estratégicas.
+            </div>
+            """, unsafe_allow_html=True)
+        
     custom_divider()
     col3, col4 = st.columns(2)
 
@@ -425,7 +431,7 @@ if df is not None:
                     font-size: 29px;
                     font-weight: bold;
                     font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #1b2e7b, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #d4a642);
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
                 '>⚖️ Custo de Envio vs. Volume por Modalidade</h2>
             </div>
@@ -496,7 +502,7 @@ if df is not None:
                     font-size: 29px;
                     font-weight: bold;
                     font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #1b2e7b, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #d4a642);
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
                 '>🚚 Custos por Modalidade de Transporte</h2>
             </div>
@@ -561,7 +567,7 @@ if df is not None:
                     font-size: 29px;
                     font-weight: bold;
                     font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #1b2e7b, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #d4a642);
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
                 '>🌆 Custo Total vs. Volume de Pedidos por Cidade</h2>
             </div>
@@ -623,68 +629,59 @@ if df is not None:
             """, unsafe_allow_html=True)
 
     with col6:
-        # 📊 Gráfico de Receita vs Custo por Transportadora
-        st.markdown(f"""
+        st.markdown("""
             <div style='text-align: center; padding-top: 10px;'>
                 <h2 style='
                     color: #FFFFFF;
                     font-size: 29px;
                     font-weight: bold;
                     font-family: Inter, sans-serif;
-                    background: linear-gradient(to right, #1b2e7b, #d4a642);
+                    background: linear-gradient(135deg, #1b2e7b, #d4a642);
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-                '>⚖️ Faturamento vs. Custo por Transportadora</h2>
+                '>💰 Custos de Envio por Transportadora</h2>
             </div>
             """, unsafe_allow_html=True)
-        receita_transportadora = df_filtered.groupby("Transportadoras")["Receita_Gerada"].sum().reset_index()
-        custo_transportadora = df_filtered.groupby("Transportadoras")["Custos_Totais"].sum().reset_index()
-        
-        fig_transp = go.Figure()
-        
-        # Barra Principal - Receita Total
-        fig_transp.add_trace(go.Bar(
-            x=receita_transportadora["Transportadoras"],
-            y=receita_transportadora["Receita_Gerada"],
-            name="Receita Total",
-            marker=dict(color=COLORS["blues"][1]),
-            text=[f"R$ {x:,.2f}" for x in receita_transportadora["Receita_Gerada"]],
-            textposition='outside',
-            width= 0.5,
-            outsidetextfont=dict(color=COLORS['cool_greens'][2])
-        ))
-        
-        # Barra Secundária - Custo Total
-        fig_transp.add_trace(go.Bar(
-            x=custo_transportadora["Transportadoras"],
-            y=custo_transportadora["Custos_Totais"],
-            name="Custo Total",
-            marker=dict(color=COLORS["warm_reds"][2]),
-            width=0.1888,
-            offset= -0.4
-        ))
-        
-        fig_transp.update_layout(
-            barmode="group",
+
+        # Box plot de custos
+
+        fig_custos = go.Figure()
+        for transportadoras in df_filtered["Transportadoras"].unique():
+            dados_transp = df_filtered[df_filtered["Transportadoras"] == transportadoras]
+            fig_custos.add_trace(go.Box(
+                y=dados_transp["Custos_Envio"],
+                name=transportadoras,
+                marker_color=COLORS["warm_reds"][2],
+                #boxmean='sd'
+            ))
+
+            fig_custos.update_traces(
+                marker=dict(opacity=0.8),  # Reduz impacto de outliers
+                line=dict(width=1.5)  # Melhora visual da borda do boxplot
+            )
+        fig_custos.update_layout(    
+            showlegend=False,
             title=" ",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            height=640,
-            font=dict(family="Inter, sans-serif", size=18),
-            xaxis_title="Transportadora",
-            yaxis_title="Valores (R$)",
-            legend=dict(font=dict(size=16)),
+            height=550,
+            margin=dict(t=40,b=40,l=20,r=20),
+            title_font_color=COLORS['warm_yellows'][0],
+            font_color=COLORS['warm_yellows'][0],
+            font=dict(family="Inter, sans-serif",size=20),
+            legend_font=dict(family="Inter, sans-serif",size=18),
+
+            yaxis=dict(
+                    title="Custos de Envio (R$)",
+                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
+                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
+                ),
         )
-
-        st.plotly_chart(fig_transp, use_container_width=True)
+        st.plotly_chart(fig_custos, use_container_width=True)
         st.markdown("""
-            <div style='text-align: center; font-size: 18px; font-weight: 500; color: #FFD700; padding-top: 5px;'>
-                🔍 Transportadoras com alto custo e baixa receita podem indicar ineficiência ou tarifas desfavoráveis. Avalie renegociações e redistribuições estratégicas.
-            </div>
-            """, unsafe_allow_html=True)
-       
-        
-
-
+        <div style='text-align: center; font-size: 18px; font-weight: 500; color: #FFD700; padding-top: 5px;'>
+            🔍 Custos elevados podem indicar falhas operacionais ou tarifas desfavoráveis. 
+            Monitore picos anormais e avalie ajustes.
+        </div>
+        """, unsafe_allow_html=True)
+              
     custom_divider()
     # Tabela detalhada
     # 📋 Dados Detalhados
@@ -695,7 +692,7 @@ if df is not None:
                 font-size: 29px;
                 font-weight: bold;
                 font-family: Inter, sans-serif;
-                background: linear-gradient(to right, #1b2e7b, #d4a642);
+                background: linear-gradient(135deg, #1b2e7b, #d4a642);
                 text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             '>📋 Dados Detalhados</h2>
         </div>
