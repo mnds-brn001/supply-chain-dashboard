@@ -593,7 +593,7 @@ if df is not None:
             y=volume_cidade["Localizacao"],
             x=volume_cidade["Quantidade_Vendida"],
             name="Volume Total de Pedidos",
-            marker=dict(color=COLORS["warm_reds"][2]),
+            marker=dict(color=COLORS["warm_yellows"][2]),
             width=0.4,
             orientation='h',
             offset=-0.58,
