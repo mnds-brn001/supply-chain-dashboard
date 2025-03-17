@@ -691,7 +691,7 @@ if df is not None:
             x=custos_local["Localizacao"],
             y=custos_local["Custos_Totais"],
             name="Custo Total",
-            marker=dict(color=COLORS['warm_oranges'][3]),
+            marker=dict(color=COLORS['warm_oranges'][1]),
             width=0.2,  # Define uma barra mais fina
             offset= -0.5
         ))
