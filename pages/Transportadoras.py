@@ -380,7 +380,7 @@ if df is not None:
             fig_custos.add_trace(go.Box(
                 y=dados_transp["Custos_Envio"],
                 name=transportadoras,
-                marker_color=COLORS["warm_yellows"][1],
+                marker_color=COLORS["warm_reds"][2],
                 #boxmean='sd'
             ))
 
@@ -445,7 +445,7 @@ if df is not None:
             y=modalidade_data["Modos_Transporte"],
             x=modalidade_data["Custos_Totais"],
             name="Custo Total de Envio",
-            marker=dict(color='#1a365d'),
+            marker=dict(color=COLORS["blues"][2]),
             orientation='h',
             width=0.5,
             text=[f"R$ {x:,.2f}" for x in modalidade_data["Custos_Totais"]],
@@ -458,7 +458,7 @@ if df is not None:
             y=modalidade_data["Modos_Transporte"],
             x=modalidade_data["Quantidade_Vendida"],
             name="Volume Total de Pedidos",
-            marker=dict(color='#d95e30'),
+            marker=dict(color=COLORS["golds"][1]),
             width=0.4,
             orientation='h',
             offset=-0.58,
@@ -580,7 +580,7 @@ if df is not None:
             y=custos_cidade["Localizacao"],
             x=custos_cidade["Custos_Totais"],
             name="Custo Total de Envio",
-            marker=dict(color='#1a365d'),
+            marker=dict(color=COLORS["blues"][1]),
             orientation='h',
             width= 0.5,
             text=[f"R$ {x:,.2f}" for x in custos_cidade["Custos_Totais"]],
@@ -593,7 +593,7 @@ if df is not None:
             y=volume_cidade["Localizacao"],
             x=volume_cidade["Quantidade_Vendida"],
             name="Volume Total de Pedidos",
-            marker=dict(color='#d95e30'),
+            marker=dict(color=COLORS["warm_reds"][2]),
             width=0.4,
             orientation='h',
             offset=-0.58,
@@ -646,7 +646,7 @@ if df is not None:
             x=receita_transportadora["Transportadoras"],
             y=receita_transportadora["Receita_Gerada"],
             name="Receita Total",
-            marker=dict(color='#2a4a7f'),
+            marker=dict(color=COLORS["blues"][1]),
             text=[f"R$ {x:,.2f}" for x in receita_transportadora["Receita_Gerada"]],
             textposition='outside',
             width= 0.5,
@@ -658,7 +658,7 @@ if df is not None:
             x=custo_transportadora["Transportadoras"],
             y=custo_transportadora["Custos_Totais"],
             name="Custo Total",
-            marker=dict(color=COLORS["warm_oranges"][4]),
+            marker=dict(color=COLORS["warm_reds"][2]),
             width=0.1888,
             offset= -0.4
         ))
