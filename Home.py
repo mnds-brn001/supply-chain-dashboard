@@ -525,7 +525,7 @@ if df is not None:
         ),
             yaxis_title="Total de Vendas",
             yaxis=dict(
-            title="Volume de Vendas (R$)",
+            title="Volume de Vendas",
             title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
             tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
         ),
