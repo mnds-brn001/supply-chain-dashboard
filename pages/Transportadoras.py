@@ -456,7 +456,7 @@ if df is not None:
             width=0.5,
             text=[f"R$ {x:,.2f}" for x in modalidade_data["Custos_Totais"]],
             textposition='inside',
-            insidetextfont=dict(color="#FFFFFF")
+            insidetextfont=dict(color=COLORS["warm_yellows"][3]) 
         ))
 
         # Barra Secundária - Volume Total de Pedidos
@@ -470,7 +470,7 @@ if df is not None:
             offset=-0.58,
             text=[f"{x:,.0f}" for x in modalidade_data["Quantidade_Vendida"]],
             textposition='inside',
-            insidetextfont=dict(color="#FFFFFF")
+            insidetextfont=dict(color=COLORS["blues"][1])
         ))
 
         fig_modalidade.update_layout(
