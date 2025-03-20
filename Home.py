@@ -222,8 +222,7 @@ if df is not None:
         st.session_state.selected_carrier = "Todas"
     if "selected_category" not in st.session_state:
         st.session_state.selected_category = list(df["Categoria"].unique())
-    if "selected_sku" not in st.session_state:
-        st.session_state.selected_sku = "Todos"
+
 
     # Filtros
     st.session_state.selected_transport = st.sidebar.selectbox(
@@ -244,11 +243,11 @@ if df is not None:
         default=st.session_state.selected_category
     )
     st.session_state.selected_sku = st.sidebar.selectbox(
-    "🔎 Buscar por SKU",
-    ["Todos"] + list(df["Produto_SKU"].unique()),
-    index=(["Todos"] + list(df["Produto_SKU"].unique())).index(st.session_state.selected_sku) if st.session_state.selected_sku in ["Todos"] + list(df["Produto_SKU"].unique()) else 0
-)
-
+        "🔎 Buscar por SKU",
+        ["Todos"] + list(df["Produto_SKU"].unique()),
+        index=(["Todos"] + list(df["Produto_SKU"].unique())).index(st.session_state.selected_sku) if st.session_state.selected_sku in ["Todos"] + list(df["Produto_SKU"].unique()) else 0
+    )
+ 
     # Aplicando filtros
     df_filtered = df.copy()
 
@@ -258,6 +257,8 @@ if df is not None:
         df_filtered = df_filtered[df_filtered["Transportadoras"] == st.session_state.selected_carrier]
     if st.session_state.selected_category:
         df_filtered = df_filtered[df_filtered["Categoria"].isin(st.session_state.selected_category)]
+    if st.session_state.selected_sku != "Todos":
+        df_filtered = df_filtered[df_filtered["Produto_SKU"] == st.session_state.selected_sku]
 
     # Calculando campos adicionais
     df_filtered["Receita_Gerada"] = pd.to_numeric(df_filtered["Receita_Gerada"], errors="coerce").fillna(0)
@@ -852,3 +853,6 @@ if df is not None:
     
 else:
     st.error("Não foi possível carregar os dados. Por favor, verifique o arquivo de dados.")
+
+st.write("Colunas Disponíveis:", df.columns)
+st.write("Amostra dos Dados:", df.head())
