@@ -17,6 +17,15 @@ st.markdown("""
     <style>
         /* Organização dos KPIs em telas menores */
         @media (max-width: 768px) {
+            .stPlotlyChart div{
+                height: 350px !important;
+            }
+            h2,h3,h3 {
+            font-size: 16px !important;
+            }
+            .stDataFrame table{
+                font-size: 12px !important;
+            }
             div[data-testid="column"] {
                 display: flex;
                 flex-wrap: wrap;
@@ -27,7 +36,7 @@ st.markdown("""
             }
         }
     </style>
-    """, unsafe_allow_html=True)    
+    """, unsafe_allow_html=True)     
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
@@ -353,7 +362,7 @@ if df is not None:
 
         fig_defeitos.update_layout(
             showlegend=False,
-            height=670,
+            height=550,
             margin=dict(t=40, b=40,l=20, r=20),
             title_font_color=COLORS['secondary'],
             font_color=COLORS['primary'],
@@ -362,13 +371,13 @@ if df is not None:
                 xaxis=dict(
                 title="Categoria de Produto",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
-                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
+                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo X
             ),
             yaxis_title="Taxa de Defeitos (%)",
             yaxis=dict(
                 title="Taxa de Defeitos (%)",
                 title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
-                tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
+                tickfont=dict(family="Inter, sans-serif",size=16)  # Aumentando fonte dos valores do eixo Y
             ),
         )
         st.plotly_chart(fig_defeitos, use_container_width=True)
@@ -393,17 +402,18 @@ if df is not None:
                 values=prejuizo_categoria["Prejuizo_Defeitos"],
                 hole=.4,
                 marker_colors=COLORS['warm_reds'],
-                textinfo='percent+label'
+                textinfo='percent+label',
+                
         )])
         fig_prejuizo.update_layout(
             title=" ",
             showlegend=False,
-            height=670,
+            height=550,
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['secondary'],
             font_color=COLORS['secondary'],
-            font=dict(size=23,family="Inter, sans-serif"),
-            legend_font=dict(size=18,family="Inter, sans-serif"),
+            font=dict(size=16,family="Inter, sans-serif"),
+            legend_font=dict(size=23,family="Inter, sans-serif"),
         )
         st.plotly_chart(fig_prejuizo, use_container_width=True)
 

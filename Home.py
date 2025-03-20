@@ -19,6 +19,15 @@ st.markdown("""
     <style>
         /* Organização dos KPIs em telas menores */
         @media (max-width: 768px) {
+            .stPlotlyChart div{
+                height: 350px !important;
+            }
+            h2,h3,h3 {
+            font-size: 16px !important;
+            }
+            .stDataFrame table{
+                font-size: 12px !important;
+            }
             div[data-testid="column"] {
                 display: flex;
                 flex-wrap: wrap;

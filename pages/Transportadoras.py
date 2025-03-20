@@ -17,6 +17,15 @@ st.markdown("""
     <style>
         /* Organização dos KPIs em telas menores */
         @media (max-width: 768px) {
+            .stPlotlyChart div{
+                height: 350px !important;
+            }
+            h2,h3,h3 {
+            font-size: 16px !important;
+            }
+            .stDataFrame table{
+                font-size: 12px !important;
+            }
             div[data-testid="column"] {
                 display: flex;
                 flex-wrap: wrap;
@@ -406,8 +415,16 @@ if df is not None:
             plot_bgcolor="rgba(0,0,0,0)",
             height=580,
             font=dict(family="Inter, sans-serif", size=20),
-            xaxis_title="Transportadora",
-            yaxis_title="Valores (R$)",
+            xaxis=dict(
+                    title="Transportadora",
+                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
+                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
+                ),
+            yaxis=dict(
+                    title="Valores (R$)",
+                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
+                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
+                ),
             legend=dict(font=dict(size=16)),
         )
 
@@ -480,8 +497,16 @@ if df is not None:
             plot_bgcolor="rgba(0,0,0,0)",
             height=640,
             font=dict(family="Inter, sans-serif", size=19),
-            xaxis_title="Valores (R$ e Unidades)",
-            yaxis_title="Modalidade de Transporte",
+            xaxis=dict(
+                    title="Valores (R$ e Unidades)",
+                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
+                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
+                ),
+            yaxis=dict(
+                    title="Modalidade de Transporte",
+                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo X
+                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo X
+                ),
             legend=dict(font=dict(size=16)),
         )
 
@@ -534,7 +559,7 @@ if df is not None:
             margin=dict(t=40,b=40,l=20,r=20),
             title_font_color=COLORS['warm_yellows'][0],
             font_color=COLORS['warm_yellows'][0],
-            font=dict(family="Inter, sans-serif",size=23),
+            font=dict(family="Inter, sans-serif",size=18),
             legend_font=dict(family="Inter, sans-serif",size=18),
             xaxis=dict(
                     title="Modalidade de Transporte",
@@ -615,8 +640,16 @@ if df is not None:
             plot_bgcolor="rgba(0,0,0,0)",
             height=640,
             font=dict(family="Inter, sans-serif", size=18),
-            xaxis_title="Valores (R$ e Unidades)",
-            yaxis_title="Cidade",
+            xaxis=dict(
+                    title="Valores (R$ e Unidades)",
+                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
+                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
+                ),
+            yaxis=dict(
+                    title="Cidade",
+                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
+                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
+                ),
             legend=dict(font=dict(size=16)),
         )
 
@@ -667,7 +700,11 @@ if df is not None:
             font_color=COLORS['warm_yellows'][0],
             font=dict(family="Inter, sans-serif",size=20),
             legend_font=dict(family="Inter, sans-serif",size=18),
-
+            xaxis=dict(
+                    title="Transportadora",
+                    title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
+                    tickfont=dict(family="Inter, sans-serif",size=18)  # Aumentando fonte dos valores do eixo Y
+                ),
             yaxis=dict(
                     title="Custos de Envio (R$)",
                     title_font=dict(family="Inter, sans-serif",size=20),  # Aumentando fonte do nome do eixo Y
