@@ -853,6 +853,3 @@ if df is not None:
     
 else:
     st.error("Não foi possível carregar os dados. Por favor, verifique o arquivo de dados.")
-
-st.write("Colunas Disponíveis:", df.columns)
-st.write("Amostra dos Dados:", df.head())
