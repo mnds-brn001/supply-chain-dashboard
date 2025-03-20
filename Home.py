@@ -222,6 +222,8 @@ if df is not None:
         st.session_state.selected_carrier = "Todas"
     if "selected_category" not in st.session_state:
         st.session_state.selected_category = list(df["Categoria"].unique())
+    if "selected_sku" not in st.session_state:
+        st.session_state.selected_sku = "Todos"
 
     # Filtros
     st.session_state.selected_transport = st.sidebar.selectbox(
@@ -241,6 +243,11 @@ if df is not None:
         options=list(df["Categoria"].unique()),
         default=st.session_state.selected_category
     )
+    st.session_state.selected_sku = st.sidebar.selectbox(
+    "🔎 Buscar por SKU",
+    ["Todos"] + list(df["Produto_SKU"].unique()),
+    index=(["Todos"] + list(df["Produto_SKU"].unique())).index(st.session_state.selected_sku) if st.session_state.selected_sku in ["Todos"] + list(df["Produto_SKU"].unique()) else 0
+)
 
     # Aplicando filtros
     df_filtered = df.copy()
