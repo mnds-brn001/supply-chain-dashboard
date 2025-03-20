@@ -213,9 +213,9 @@ if df is not None:
         st.session_state.selected_carrier = "Todas"
     if "selected_category" not in st.session_state:
         st.session_state.selected_category = list(df["Categoria"].unique())
-    if "selected_category" not in st.session_state:
-        st.session_state.selected_category = list(df["Categoria"].unique())
-
+    if "selected_sku" not in st.session_state:
+        st.session_state.selected_sku = "Todos"
+        
     # Filtros
     st.session_state.selected_transport = st.sidebar.selectbox(
         "🚛 Modo de Transporte",

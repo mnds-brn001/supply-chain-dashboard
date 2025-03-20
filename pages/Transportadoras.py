@@ -200,7 +200,7 @@ if df is not None:
     if "selected_category" not in st.session_state:
         st.session_state.selected_category = list(df["Categoria"].unique())
     if "selected_category" not in st.session_state:
-        st.session_state.selected_category = list(df["Categoria"].unique())
+        st.session_state.selected_sku = list(df["Categoria"].unique())
 
     # Filtros
     st.session_state.selected_transport = st.sidebar.selectbox(
@@ -465,7 +465,7 @@ if df is not None:
 
         # Agrupando os dados
         modalidade_data = df_filtered.groupby("Modos_Transporte").agg({
-            "Quantidade_Vendida": "sum",
+            "Volume_Pedidos": "sum",
             "Custos_Totais": "sum"
         }).reset_index()
 
@@ -488,13 +488,13 @@ if df is not None:
         # Barra Secundária - Volume Total de Pedidos
         fig_modalidade.add_trace(go.Bar(
             y=modalidade_data["Modos_Transporte"],
-            x=modalidade_data["Quantidade_Vendida"],
+            x=modalidade_data["Volume_Pedidos"],
             name="Volume Total de Pedidos",
             marker=dict(color=COLORS["golds"][1]),
             width=0.4,
             orientation='h',
             offset=-0.58,
-            text=[f"{x:,.0f}" for x in modalidade_data["Quantidade_Vendida"]],
+            text=[f"{x:,.0f}" for x in modalidade_data["Volume_Pedidos"]],
             textposition='inside',
             insidetextfont=dict(color=COLORS["blues"][1])
         ))
@@ -610,7 +610,7 @@ if df is not None:
         # Calculando os custos totais por cidade ANTES de passar para o gráfico
         
         custos_cidade = df_filtered.groupby("Localizacao")["Custos_Totais"].sum().sort_values(ascending=True).reset_index()
-        volume_cidade = df_filtered.groupby("Localizacao")["Quantidade_Vendida"].sum().reset_index()
+        volume_cidade = df_filtered.groupby("Localizacao")["Volume_Pedidos"].sum().reset_index()
 
         # Gráfico de barras horizontal para custos por cidade
         fig_cidade = go.Figure()
@@ -631,13 +631,13 @@ if df is not None:
         # Barra Secundária - Volume Total de Pedidos
         fig_cidade.add_trace(go.Bar(
             y=volume_cidade["Localizacao"],
-            x=volume_cidade["Quantidade_Vendida"],
+            x=volume_cidade["Volume_Pedidos"],
             name="Volume Total de Pedidos",
             marker=dict(color=COLORS["warm_yellows"][2]),
             width=0.4,
             orientation='h',
             offset=-0.58,
-            text=volume_cidade["Quantidade_Vendida"],
+            text=volume_cidade["Volume_Pedidos"],
             textposition='inside',
             insidetextfont=dict(color=COLORS["blues"][1]) 
         ))
@@ -821,3 +821,4 @@ if df is not None:
 
 else:
     st.error("Não foi possível carregar os dados. Por favor, verifique o arquivo de dados.")
+
