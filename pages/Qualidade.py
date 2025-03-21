@@ -199,7 +199,7 @@ if df is not None:
         df["Transportadoras"] = df["Transportadoras"].map(transportadora_traducao).fillna(df["Transportadoras"])
     
     # Inicializa os valores dos filtros no session_state se ainda não existirem
-    for key in ["selected_category", "selected_transportadora", "selected_mode"]:
+    for key in ["selected_category", "selected_transportadora", "selected_mode", "selected_sku"]:
         if key not in st.session_state:
             st.session_state[key] = None if key != "selected_category" else []
 
@@ -215,7 +215,7 @@ if df is not None:
         st.session_state.selected_category = list(df["Categoria"].unique())
     if "selected_sku" not in st.session_state:
         st.session_state.selected_sku = "Todos"
-        
+
     # Filtros
     st.session_state.selected_transport = st.sidebar.selectbox(
         "🚛 Modo de Transporte",
